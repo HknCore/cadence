@@ -45,6 +45,25 @@ public sealed class GameProfile
     /// </summary>
     public bool? MatchRefreshRate { get; set; }
 
+    /// <summary>
+    /// Fenstertitel aufräumen: Manche Spiele hängen Leerzeichen, Tabs oder unsichtbare Zeichen an.
+    /// </summary>
+    public static string CleanName(string? name)
+    {
+        if (string.IsNullOrEmpty(name)) return "";
+        var sb = new System.Text.StringBuilder(name.Length);
+        var space = false;
+        foreach (var ch in name)
+        {
+            var cat = char.GetUnicodeCategory(ch);
+            if (cat is System.Globalization.UnicodeCategory.Control or System.Globalization.UnicodeCategory.Format) continue;
+            if (char.IsWhiteSpace(ch)) { space = sb.Length > 0; continue; }
+            if (space) { sb.Append(' '); space = false; }
+            sb.Append(ch);
+        }
+        return sb.ToString();
+    }
+
     [JsonIgnore]
     public bool FollowsRefreshRate => MatchRefreshRate ?? IsDefault;
 

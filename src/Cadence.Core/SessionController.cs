@@ -18,7 +18,7 @@ public sealed class GameSession
     public Process Process { get; }
     public int ProcessId => Process.Id;
     public string ExeName { get; }
-    public string DisplayName => Profile.IsDefault ? Process.ProcessName : Profile.DisplayName;
+    public string DisplayName => GameProfile.CleanName(Profile.IsDefault ? Process.ProcessName : Profile.DisplayName);
     /// <summary>Aktives Profil (Standardprofil, wenn das Spiel kein eigenes hat).</summary>
     public GameProfile Profile { get; internal set; }
     public bool UsesDefaultProfile => Profile.IsDefault;
@@ -232,7 +232,7 @@ public sealed class SessionController : IDisposable
         if (!s.UsesDefaultProfile) return s.Profile;
         var p = s.Profile.Clone();
         p.ExeName = s.ExeName;
-        p.DisplayName = s.Process.MainWindowTitle is { Length: > 0 } t ? t : s.Process.ProcessName;
+        p.DisplayName = GameProfile.CleanName(s.Process.MainWindowTitle) is { Length: > 0 } t ? t : s.Process.ProcessName;
         p.ExePath = TryGetExePath(s.Process);
         p.MatchRefreshRate = null;
         p.LastPlayed = DateTimeOffset.Now;

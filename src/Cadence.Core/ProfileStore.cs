@@ -55,6 +55,7 @@ public sealed class ProfileStore
                 _model.Settings ??= new();
                 _model.Overlay ??= new();
                 _model.Settings.Normalize();
+                foreach (var g in _model.Games) g.DisplayName = GameProfile.CleanName(g.DisplayName);
                 _model.Default.ApplyRefreshRate();
             }
             catch (JsonException)

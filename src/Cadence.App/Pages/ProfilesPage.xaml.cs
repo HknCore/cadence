@@ -170,7 +170,7 @@ public sealed partial class ProfilesPage : Page
         {
             SelectionMode = ListViewSelectionMode.Single,
             MaxHeight = 360,
-            ItemsSource = candidates.Select(p => $"{p.MainWindowTitle}  ·  {p.ProcessName}.exe").ToList(),
+            ItemsSource = candidates.Select(p => $"{GameProfile.CleanName(p.MainWindowTitle)} · {p.ProcessName}.exe").ToList(),
         };
         var panel = new StackPanel { Spacing = 12, MinWidth = 420 };
         panel.Children.Add(new TextBlock
@@ -199,7 +199,7 @@ public sealed partial class ProfilesPage : Page
         var profile = App.Profiles.Find(exe) ?? new GameProfile
         {
             ExeName = exe,
-            DisplayName = proc.MainWindowTitle,
+            DisplayName = GameProfile.CleanName(proc.MainWindowTitle),
             ExePath = SessionController.TryGetExePath(proc),
             TargetFps = App.Profiles.Default.TargetFps,
             Mode = App.Profiles.Default.Mode,

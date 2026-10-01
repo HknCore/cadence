@@ -56,7 +56,7 @@ public sealed class ProfileItem : ObservableObject
     public string DisplayName
     {
         get => Model.DisplayName;
-        set { if (Model.DisplayName == value || IsDefault) return; Model.DisplayName = value; OnPropertyChanged(nameof(Initials)); Changed(nameof(Title)); }
+        set { value = GameProfile.CleanName(value); if (Model.DisplayName == value || IsDefault || value.Length == 0) return; Model.DisplayName = value; OnPropertyChanged(nameof(Initials)); Changed(nameof(Title)); }
     }
 
     public double TargetFps
