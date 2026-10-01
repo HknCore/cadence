@@ -24,15 +24,19 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel Spacing="4">
                 <TextBlock Text="Statistiken" Style="{StaticResource TitleTextBlockStyle}" />
                 <TextBlock x:Name="SessionInfo" Style="{StaticResource CaptionStyle}"
                            Text="Starte eine Aufnahme, während ein Spiel läuft." />
             </StackPanel>
-            <Button x:Name="CsvButton" Grid.Column="1" Content="Als CSV exportieren" IsEnabled="False" Click="Csv_Click" VerticalAlignment="Bottom" />
-            <Button x:Name="ImageButton" Grid.Column="2" Content="Als Bild speichern" IsEnabled="False" Click="Image_Click" VerticalAlignment="Bottom" />
-            <Button x:Name="RecordButton" Grid.Column="3" Style="{StaticResource AccentButtonStyle}" Click="Record_Click" VerticalAlignment="Bottom">
+            <ComboBox x:Name="CompareBox" Grid.Column="1" Width="230" VerticalAlignment="Bottom" IsEnabled="False"
+                      PlaceholderText="Vergleichen mit …" SelectionChanged="CompareBox_SelectionChanged"
+                      AutomationProperties.Name="Vergleichen mit" />
+            <Button x:Name="CsvButton" Grid.Column="2" Content="Als CSV exportieren" IsEnabled="False" Click="Csv_Click" VerticalAlignment="Bottom" />
+            <Button x:Name="ImageButton" Grid.Column="3" Content="Als Bild speichern" IsEnabled="False" Click="Image_Click" VerticalAlignment="Bottom" />
+            <Button x:Name="RecordButton" Grid.Column="4" Style="{StaticResource AccentButtonStyle}" Click="Record_Click" VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Ellipse x:Name="RecDot" Width="8" Height="8" Fill="{ThemeResource TextOnAccentFillColorPrimaryBrush}" />
                     <TextBlock x:Name="RecordText" Text="Aufnehmen" />
@@ -53,22 +57,27 @@
                 <StackPanel Spacing="2">
                     <TextBlock Text="Ø FPS" Style="{StaticResource CaptionStyle}" />
                     <TextBlock x:Name="AvgText" Text="–" Style="{StaticResource StatValueStyle}" />
+                    <TextBlock x:Name="AvgDelta" Style="{StaticResource CaptionStyle}" Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Spacing="2">
                     <TextBlock Text="1 % Low" Style="{StaticResource CaptionStyle}" />
                     <TextBlock x:Name="Low1Text" Text="–" Style="{StaticResource StatValueStyle}" />
+                    <TextBlock x:Name="Low1Delta" Style="{StaticResource CaptionStyle}" Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel Grid.Column="2" Spacing="2">
                     <TextBlock Text="0,1 % Low" Style="{StaticResource CaptionStyle}" />
                     <TextBlock x:Name="Low01Text" Text="–" Style="{StaticResource StatValueStyle}" />
+                    <TextBlock x:Name="Low01Delta" Style="{StaticResource CaptionStyle}" Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel Grid.Column="3" Spacing="2">
                     <TextBlock Text="σ Frametime" Style="{StaticResource CaptionStyle}" />
                     <TextBlock x:Name="SdText" Text="–" Style="{StaticResource StatValueStyle}" Foreground="{StaticResource CadenceAccentBrush}" />
+                    <TextBlock x:Name="SdDelta" Style="{StaticResource CaptionStyle}" Visibility="Collapsed" />
                 </StackPanel>
                 <StackPanel Grid.Column="4" Spacing="2">
                     <TextBlock Text="Stotterer" Style="{StaticResource CaptionStyle}" />
                     <TextBlock x:Name="StutterText" Text="–" Style="{StaticResource StatValueStyle}" Foreground="{StaticResource CadenceAccentBrush}" />
+                    <TextBlock x:Name="StutterDelta" Style="{StaticResource CaptionStyle}" Visibility="Collapsed" />
                 </StackPanel>
             </Grid>
         </Border>

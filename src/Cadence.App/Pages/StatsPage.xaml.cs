@@ -23,6 +23,7 @@ public sealed class SessionRow(RecordedSession session)
     public string Low01 => $"{Session.Stats.Low01Fps:0.00}";
     public string Sd => $"{Session.Stats.StdDevMs:0.00} ms";
     public string Stutters => Session.Stats.Stutters.ToString();
+    public string ShortLabel => $"{Session.Game} · {Session.TargetFps:0} FPS · {Session.StartedAt:HH:mm}";
 }
 
 public sealed partial class StatsPage : Page
@@ -34,6 +35,12 @@ public sealed partial class StatsPage : Page
     private static readonly SolidColorBrush TertiaryText = new(Windows.UI.Color.FromArgb(255, 0x8A, 0x8A, 0x8A));
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromMilliseconds(250) };
     private Storyboard? _blink;
+    private static readonly SolidColorBrush WorseText = new(Windows.UI.Color.FromArgb(255, 0xE8, 0x8A, 0x8A));
+
+    // Vergleich: die gewaehlte Aufnahme gegen eine zweite ("vorher").
+    private SessionRow? _baseline;
+    private List<SessionRow> _compareRows = [];
+    private bool _fillingCompare;
 
     public StatsPage()
     {
@@ -118,29 +125,105 @@ public sealed partial class StatsPage : Page
     {
         var row = SessionList.SelectedItem as SessionRow;
         CsvButton.IsEnabled = ImageButton.IsEnabled = row is not null;
-        if (row is null) return;
+        FillCompareChoices();
+        ShowSelected();
+    }
 
+    /// <summary>Alle anderen Aufnahmen stehen als Vergleich zur Wahl.</summary>
+    private void FillCompareChoices()
+    {
+        _fillingCompare = true;
+        var current = SessionList.SelectedItem as SessionRow;
+        _compareRows = Sessions.Where(r => !ReferenceEquals(r, current)).ToList();
+        // Die Liste wird nach jeder Aufnahme neu aufgebaut – den Vergleich an der Aufnahme selbst festmachen.
+        _baseline = _baseline is null ? null : _compareRows.FirstOrDefault(r => ReferenceEquals(r.Session, _baseline.Session));
+
+        CompareBox.Items.Clear();
+        CompareBox.Items.Add("Kein Vergleich");
+        foreach (var r in _compareRows) CompareBox.Items.Add(r.ShortLabel);
+        CompareBox.SelectedIndex = _baseline is null ? 0 : _compareRows.IndexOf(_baseline) + 1;
+        CompareBox.IsEnabled = current is not null && _compareRows.Count > 0;
+        _fillingCompare = false;
+    }
+
+    private void CompareBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (_fillingCompare) return;
+        var i = CompareBox.SelectedIndex;
+        _baseline = i > 0 && i <= _compareRows.Count ? _compareRows[i - 1] : null;
+        ShowSelected();
+    }
+
+    private void ShowSelected()
+    {
+        if (SessionList.SelectedItem is not SessionRow row) return;
         var s = row.Session;
-        SessionInfo.Text = $"{s.Game} · {s.TargetFps:0} FPS · {ProfileItem.ModeName(s.Mode)} · Aufnahme von {s.Duration:m\\:ss} min";
+        var b = _baseline?.Session;
+
+        SessionInfo.Text = $"{s.Game} · {s.TargetFps:0} FPS · {ProfileItem.ModeName(s.Mode)} · Aufnahme von {s.Duration:m\\:ss} min" +
+                           (b is null ? "" : $"  ·  verglichen mit {_baseline!.ShortLabel}");
         AvgText.Text = row.Avg;
         Low1Text.Text = row.Low1;
         Low01Text.Text = row.Low01;
         SdText.Text = row.Sd;
         StutterText.Text = row.Stutters;
-        BuildHistogram(s);
+
+        SetDelta(AvgDelta, s.Stats.AverageFps, b?.Stats.AverageFps, higherIsBetter: true);
+        SetDelta(Low1Delta, s.Stats.Low1Fps, b?.Stats.Low1Fps, higherIsBetter: true);
+        SetDelta(Low01Delta, s.Stats.Low01Fps, b?.Stats.Low01Fps, higherIsBetter: true);
+        SetDelta(SdDelta, s.Stats.StdDevMs, b?.Stats.StdDevMs, higherIsBetter: false);
+        SetDelta(StutterDelta, s.Stats.Stutters, b?.Stats.Stutters, higherIsBetter: false, absolute: true);
+        BuildHistogram(s, b);
     }
 
-    private void BuildHistogram(RecordedSession s)
+    /// <summary>"+61 %" bzw. "−95 %" unter einer Kennzahl – lila = besser, rot = schlechter.</summary>
+    private static void SetDelta(TextBlock target, double value, double? baseline, bool higherIsBetter, bool absolute = false)
+    {
+        if (baseline is not { } b || (!absolute && b <= 0))
+        {
+            target.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        var diff = value - b;
+        double change;
+        string text;
+        if (absolute)
+        {
+            change = diff;
+            text = diff == 0 ? "gleich" : diff.ToString("+0;−0");
+        }
+        else
+        {
+            change = diff / b * 100;
+            text = Math.Abs(change) < 0.5 ? "gleich" : change.ToString("+0;−0") + " %";
+        }
+
+        var neutral = absolute ? diff == 0 : Math.Abs(change) < 1;
+        var better = higherIsBetter ? change > 0 : change < 0;
+        target.Text = neutral ? text : $"{text} ggü. Vergleich";
+        target.Foreground = neutral ? TertiaryText
+            : better ? (SolidColorBrush)Application.Current.Resources["CadenceAccentBrush"]
+            : WorseText;
+        target.Visibility = Visibility.Visible;
+    }
+
+    private void BuildHistogram(RecordedSession s, RecordedSession? baseline = null)
     {
         Bars.Children.Clear(); Bars.ColumnDefinitions.Clear();
         BarLabels.Children.Clear(); BarLabels.ColumnDefinitions.Clear();
 
         var center = s.TargetFps > 0 ? 1000.0 / s.TargetFps : 1000.0 / Math.Max(1, s.Stats.AverageFps);
-        // Breite so waehlen, dass die typische Streuung sichtbar wird.
-        var width = Math.Max(0.02, Math.Round(Math.Max(s.Stats.StdDevMs, 0.02) * 0.75, 2));
+        // Breite so waehlen, dass die typische Streuung sichtbar wird – beim Vergleich die der unruhigeren Aufnahme,
+        // damit beide auf derselben Skala liegen.
+        var spread = Math.Max(s.Stats.StdDevMs, baseline?.Stats.StdDevMs ?? 0);
+        var width = Math.Max(0.02, Math.Round(Math.Max(spread, 0.02) * 0.75, 2));
         var bins = FrameStats.Histogram(s.Frametimes, center, width, BinCount);
-        var maxPct = Math.Max(1, bins.Max(b => b.Percent));
-        CenterText.Text = $"Ziel {center:0.00} ms · Balken {width:0.00} ms";
+        var ghost = baseline is null ? null : FrameStats.Histogram(baseline.Frametimes, center, width, BinCount);
+        var maxPct = Math.Max(1, Math.Max(bins.Max(b => b.Percent), ghost?.Max(b => b.Percent) ?? 0));
+        CenterText.Text = ghost is null
+            ? $"Ziel {center:0.00} ms · Balken {width:0.00} ms"
+            : $"Ziel {center:0.00} ms · Balken {width:0.00} ms · gestrichelt = Vergleich";
 
         var board = new Storyboard();
         var accent = (SolidColorBrush)Application.Current.Resources["CadenceAccentBrush"];
@@ -160,15 +243,34 @@ public sealed partial class StatsPage : Page
                 Foreground = SecondaryText,
             });
             var scale = new ScaleTransform { ScaleY = 0 };
-            var bar = new Rectangle
+            var stack = new Grid
             {
-                Height = Math.Max(2, bins[i].Percent / maxPct * 200),
-                RadiusX = 3, RadiusY = 3,
-                Fill = i == BinCount / 2 ? accent : muted,
+                VerticalAlignment = VerticalAlignment.Bottom,
                 RenderTransform = scale,
                 RenderTransformOrigin = new Windows.Foundation.Point(0.5, 1),
             };
-            col.Children.Add(bar);
+            // Vergleichs-Aufnahme als gestrichelter Umriss hinter dem Balken.
+            if (ghost is not null && ghost[i].Percent > 0)
+            {
+                stack.Children.Add(new Rectangle
+                {
+                    Height = Math.Max(2, ghost[i].Percent / maxPct * 200),
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    RadiusX = 3, RadiusY = 3,
+                    Stroke = SecondaryText,
+                    StrokeThickness = 1.5,
+                    StrokeDashArray = new DoubleCollection { 3, 2 },
+                    Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(24, 0xFF, 0xFF, 0xFF)),
+                });
+            }
+            stack.Children.Add(new Rectangle
+            {
+                Height = Math.Max(2, bins[i].Percent / maxPct * 200),
+                VerticalAlignment = VerticalAlignment.Bottom,
+                RadiusX = 3, RadiusY = 3,
+                Fill = i == BinCount / 2 ? accent : muted,
+            });
+            col.Children.Add(stack);
             Grid.SetColumn(col, i);
             Bars.Children.Add(col);
 
