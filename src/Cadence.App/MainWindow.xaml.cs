@@ -92,6 +92,7 @@ public sealed partial class MainWindow : Window
             return;
         }
         Nav.Opacity = 0;
+        SplashVersion.Text = "Version " + AppVersion;
 
         // Logo: drei Balken pulsieren versetzt – wie ein gleichmaessiger Takt.
         _splashLoop = new Storyboard();
@@ -169,6 +170,9 @@ public sealed partial class MainWindow : Window
         };
         fade.Begin();
     }
+
+    public static string AppVersion =>
+        typeof(MainWindow).Assembly.GetName().Version is { } v ? $"{v.Major}.{v.Minor}.{v.Build}" : "";
 
     private static TimeSpan Ms(int ms) => TimeSpan.FromMilliseconds(ms);
 

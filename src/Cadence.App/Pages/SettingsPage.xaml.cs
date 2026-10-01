@@ -29,6 +29,7 @@ public sealed partial class SettingsPage : Page
             "Strg + Alt + R  Aufnahme starten / stoppen\n" +
             "Strg + Alt + O  Overlay ein- / ausblenden";
         ProfilePath.Text = ProfileDir;
+        AboutText.Text = $"Version {MainWindow.AppVersion} · " + AboutText.Text;
     }
 
     private void Autostart_Toggled(object sender, RoutedEventArgs e)

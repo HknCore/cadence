@@ -139,7 +139,7 @@
                     <TextBlock x:Name="SplashStatus" Text="Starte …" Style="{StaticResource CaptionStyle}" HorizontalAlignment="Center" />
                 </StackPanel>
             </StackPanel>
-            <TextBlock Text="Version 0.2" Style="{StaticResource CaptionStyle}" Opacity="0.6"
+            <TextBlock x:Name="SplashVersion" Style="{StaticResource CaptionStyle}" Opacity="0.6"
                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,24" />
         </Grid>
     </Grid>

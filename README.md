@@ -183,12 +183,13 @@ Beim Beenden laufen alle Spiele sofort wieder unbegrenzt. Selbst wenn Cadence ab
 
 ## So legst du los
 
-> [!NOTE]
-> Cadence befindet sich im **Early Access**. Fertige Downloads folgen unter [Releases](../../releases). Bis dahin baust du die App in wenigen Schritten selbst, siehe **[Bauen und testen](docs/BUILD.md)**.
+1. **[Neueste Version herunterladen](../../releases/latest)** (`Cadence-Setup-x.y.z.exe`) und installieren. Keine Admin-Rechte nötig.
+2. Cadence starten.
+3. Ein Spiel starten. Läuft es im Vollbild, schlägt Cadence vor, es zu begrenzen. Alternativ unter **Profile → Profil hinzufügen**.
+4. Ziel-FPS wählen. Fertig.
 
-1. Cadence starten.
-2. Ein Spiel starten. Läuft es im Vollbild, schlägt Cadence vor, es zu begrenzen. Alternativ unter **Profile → Profil hinzufügen**.
-3. Ziel-FPS wählen. Fertig.
+> [!NOTE]
+> Cadence ist noch nicht digital signiert. Windows SmartScreen zeigt deshalb beim ersten Start „Der Computer wurde durch Windows geschützt“. Klicke auf **Weitere Informationen → Trotzdem ausführen**. Lieber selbst bauen? Siehe **[Bauen und testen](docs/BUILD.md)**.
 
 **Systemanforderungen:** Windows 10 22H2 oder Windows 11 (64-Bit) · 64-Bit-Spiele mit DirectX 10, 11, 12 oder OpenGL · empfohlen: Monitor mit G-Sync oder FreeSync
 
@@ -259,7 +260,8 @@ Im exklusiven Vollbild lässt Windows keine anderen Fenster über dem Spiel zu. 
 - [ ] Vulkan-Unterstützung
 - [ ] 32-Bit-Spiele
 - [ ] Automatisch knapp unter der Bildwiederholrate bleiben, wenn VRR aktiv ist
-- [ ] Fertige Installationspakete unter Releases
+- [x] Installer mit automatischen Releases
+- [ ] Digitale Signatur
 
 Ideen oder Fehler gefunden? Eröffne ein [Issue](../../issues). Bitte gib Spiel, Grafik-API und den Status aus der Übersicht an.
 

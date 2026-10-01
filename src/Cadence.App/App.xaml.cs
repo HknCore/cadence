@@ -22,8 +22,23 @@ public partial class App : Application
         FramesArrived?.Invoke(data);
     }
 
+    // Der Installer erkennt am Mutex, dass Cadence laeuft, und bittet um Schliessen.
+    private const string MutexName = "CadenceAppMutex";
+    private const string ShowEventName = "CadenceShowWindow";
+    private static Mutex? _instanceMutex;
+    private static EventWaitHandle? _showEvent;
+
     public App()
     {
+        // Laeuft Cadence schon (z. B. im Tray), das vorhandene Fenster zeigen und beenden.
+        _instanceMutex = new Mutex(true, MutexName, out var isFirst);
+        if (!isFirst)
+        {
+            if (EventWaitHandle.TryOpenExisting(ShowEventName, out var ev)) ev.Set();
+            Environment.Exit(0);
+        }
+        _showEvent = new EventWaitHandle(false, EventResetMode.AutoReset, ShowEventName);
+
         InitializeComponent();
         UnhandledException += (_, e) =>
         {
@@ -44,6 +59,7 @@ public partial class App : Application
         MainWindow.Closed += (_, _) => Shutdown(exitApp: false);
 
         var minimized = Environment.GetCommandLineArgs().Contains("--minimized");
+        ListenForSecondInstance();
         CreateTray();
         MainWindow.RunSplash(skip: minimized);
         MainWindow.Activate();
@@ -51,6 +67,19 @@ public partial class App : Application
         // Autostart: direkt in den Tray, Profile greifen trotzdem.
         if (minimized && MainWindow.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
             presenter.Minimize();
+    }
+
+    private static void ListenForSecondInstance()
+    {
+        var t = new Thread(() =>
+        {
+            while (_showEvent!.WaitOne())
+            {
+                if (_shuttingDown) return;
+                MainWindow.DispatcherQueue.TryEnqueue(MainWindow.RestoreFromTray);
+            }
+        }) { IsBackground = true, Name = "Cadence Single Instance" };
+        t.Start();
     }
 
     // ------------------------------------------------------------ Tray

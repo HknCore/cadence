@@ -46,6 +46,25 @@ Das Skript baut zuerst die Hook-DLL und dann die App. Am Ende gibt es den Pfad z
 
 Falls der Build an einem NuGet-Paket scheitert (z. B. Windows App SDK), zuerst Visual Studio über den Visual Studio Installer aktualisieren (bringt ein neueres .NET SDK mit). Hilft das nicht, melde die Fehlermeldung als Issue.
 
+## Installer bauen
+
+Zusätzlich zu Visual Studio wird [Inno Setup](https://jrsoftware.org/isdl.php) 6.6 oder neuer benötigt (`winget install JRSoftware.InnoSetup`). Dann:
+
+```powershell
+.\build-installer.ps1
+```
+
+Das Ergebnis liegt unter `build\installer\Cadence-Setup-<Version>.exe`. Die Versionsnummer steht an einer einzigen Stelle: `Directory.Build.props`.
+
+### Automatische Releases
+
+Sobald ein Versions-Tag auf GitHub landet, baut GitHub Actions den Installer und hängt ihn an ein neues Release:
+
+```powershell
+git tag v0.2.2
+git push origin v0.2.2
+```
+
 ## Testen
 
 Bitte nur mit **Offline- bzw. Einzelspieler-Spielen ohne Anti-Cheat** testen.

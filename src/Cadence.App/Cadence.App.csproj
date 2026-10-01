@@ -30,14 +30,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Die Hook-DLL wird von build.ps1 nach build\hook\ gebaut und hier mitkopiert. -->
   <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll')">
     <None Include="$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll"
           Link="CadenceHook.dll"
-          CopyToOutputDirectory="PreserveNewest" />
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <Target Name="WarnMissingHook" BeforeTargets="Build"

@@ -6,6 +6,9 @@
     muessen dieselbe Version nutzen, sonst gibt es Versionskonflikte (MSB3277).
   -->
   <PropertyGroup>
+    <!-- Einzige Stelle fuer die Versionsnummer (App, Installer, Release). -->
+    <Version>0.2.2</Version>
+    <Product>Cadence</Product>
     <WindowsSdkPackageVersion>10.0.19041.56</WindowsSdkPackageVersion>
   </PropertyGroup>
 </Project>

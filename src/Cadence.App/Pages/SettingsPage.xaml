@@ -63,7 +63,7 @@
                 <StackPanel Spacing="2">
                     <TextBlock Text="Über Cadence" />
                     <TextBlock Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"
-                               Text="Version 0.1 · Unterstützt 64-Bit-Spiele mit DirectX 10, 11, 12 und OpenGL. Vulkan, 32-Bit-Spiele und das In-Game-Overlay folgen." />
+                               x:Name="AboutText" Text="Unterstützt 64-Bit-Spiele mit DirectX 10, 11, 12 und OpenGL. Vulkan und 32-Bit-Spiele folgen." />
                 </StackPanel>
             </Border>
         </StackPanel>
