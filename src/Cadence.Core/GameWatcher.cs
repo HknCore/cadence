@@ -30,7 +30,7 @@ public sealed class GameWatcher : IDisposable
         "obs64", "obs32", "code", "devenv", "rider64", "spotify", "teams", "ms-teams", "slack", "zoom",
         "photoshop", "blender", "unity", "unrealeditor", "vlc", "mpc-hc64", "applicationframehost",
         "searchhost", "startmenuexperiencehost", "shellexperiencehost", "textinputhost", "dwm",
-        "nvcontainer", "nvidia app", "radeonsoftware", "msiafterburner", "rtss", "cadence",
+        "nvcontainer", "snippingtool", "screenclippinghost", "screensketch", "msedgewebview2", "powertoys", "lockapp", "gamebar", "xboxgamebar", "nvidia app", "radeonsoftware", "msiafterburner", "rtss", "cadence",
     };
 
     private readonly ProfileStore _profiles;

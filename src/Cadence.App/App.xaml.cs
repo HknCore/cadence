@@ -48,7 +48,8 @@ public partial class App : Application
             if (MainWindow is null) return; // beim Start: OnLaunched meldet den Fehler selbst
             // Im laufenden Betrieb nicht abstuerzen, sondern den Fehler anzeigen.
             e.Handled = true;
-            MainWindow.ShowError(e.Exception.Message);
+            var msg = string.IsNullOrWhiteSpace(e.Exception?.Message) ? e.Message : e.Exception.Message;
+            MainWindow.ShowError($"{(string.IsNullOrWhiteSpace(msg) ? e.Exception?.GetType().Name : msg)} – Details: {CrashReporter.LogPath}");
         };
     }
 

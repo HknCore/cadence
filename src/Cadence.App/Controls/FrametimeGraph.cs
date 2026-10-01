@@ -64,10 +64,22 @@ public sealed class FrametimeGraph : Grid
         SizeChanged += (_, _) => Render();
     }
 
+    // Die Frametimes kommen in Paketen (alle ~20 ms). Damit der Graph trotzdem gleichmaessig
+    // fliesst, werden sie zwischengespeichert und im Takt ihrer echten Dauer abgespielt.
+    private readonly Queue<float> _pending = new();
+    private double _pendingMs;
+    private double _playMs;
+    private readonly System.Diagnostics.Stopwatch _clock = System.Diagnostics.Stopwatch.StartNew();
+    private double _lastRenderMs;
+    private const double MaxBacklogMs = 250;
+
     public void Clear()
     {
         _count = 0;
         _head = 0;
+        _pending.Clear();
+        _pendingMs = 0;
+        _playMs = 0;
         Render();
     }
 
@@ -75,10 +87,37 @@ public sealed class FrametimeGraph : Grid
     {
         foreach (var s in samples)
         {
-            _ring[_head] = s;
-            _head = (_head + 1) % Capacity;
-            if (_count < Capacity) _count++;
+            _pending.Enqueue(s);
+            _pendingMs += s;
         }
+        // Zu viel Rueckstand (z. B. Fenster war verdeckt): Aelteres sofort uebernehmen.
+        while (_pendingMs > MaxBacklogMs && _pending.Count > 1) Commit(_pending.Dequeue());
+    }
+
+    private void Commit(float sample)
+    {
+        _pendingMs -= sample;
+        _ring[_head] = sample;
+        _head = (_head + 1) % Capacity;
+        if (_count < Capacity) _count++;
+    }
+
+    /// <summary>Gibt wartende Frames frei, sobald ihre Zeit vergangen ist. Liefert den Bruchteil des naechsten Frames.</summary>
+    private double Advance()
+    {
+        var now = _clock.Elapsed.TotalMilliseconds;
+        var dt = Math.Min(now - _lastRenderMs, 100);
+        _lastRenderMs = now;
+
+        if (_pending.Count == 0) { _playMs = 0; return 0; }
+        _playMs += dt;
+        while (_pending.Count > 0 && _playMs >= _pending.Peek())
+        {
+            var s = _pending.Dequeue();
+            _playMs -= s;
+            Commit(s);
+        }
+        return _pending.Count > 0 && _pending.Peek() > 0 ? Math.Clamp(_playMs / _pending.Peek(), 0, 1) : 0;
     }
 
     /// <param name="targetMs">Ziel-Frametime; null = unbegrenzt.</param>
@@ -91,6 +130,7 @@ public sealed class FrametimeGraph : Grid
 
     public void Render()
     {
+        var frac = Advance();
         var w = ActualWidth;
         var h = ActualHeight;
         if (w <= AxisWidth || h <= 10) return;
@@ -119,10 +159,12 @@ public sealed class FrametimeGraph : Grid
         var pts = new PointCollection();
         var area = new PointCollection { new Point(w, h) };
         var plotW = w - AxisWidth;
+        // Zwischen zwei Frames weich nach links gleiten statt zu springen.
+        var shift = frac * plotW / (Capacity - 1);
         for (var i = 0; i < _count; i++)
         {
             var sample = _ring[(_head - _count + i + Capacity) % Capacity];
-            var x = AxisWidth + plotW * (Capacity - _count + i) / (Capacity - 1);
+            var x = Math.Max(AxisWidth, AxisWidth + plotW * (Capacity - _count + i) / (Capacity - 1) - shift);
             var p = new Point(x, Y(sample));
             pts.Add(p);
         }

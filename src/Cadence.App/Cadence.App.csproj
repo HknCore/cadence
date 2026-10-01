@@ -22,28 +22,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Assets\Cadence.ico</ApplicationIcon>
-
-    <!-- Kleinere Installation -->
-    <!-- nur deutsche und englische Sprachressourcen mitliefern -->
-    <SatelliteResourceLanguages>de;en</SatelliteResourceLanguages>
-    <!-- beim Veröffentlichen ungenutzte Teile der .NET-Bibliotheken entfernen.
-         "partial": nur Microsoft-Bibliotheken werden gekürzt, Cadence-Code bleibt unangetastet. -->
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
-    <!-- Diagnose- und Debugger-Hilfen, die eine Endanwender-App nicht braucht -->
-    <DebuggerSupport>false</DebuggerSupport>
-    <EventSourceSupport>false</EventSourceSupport>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Nur die Teile des Windows App SDK, die Cadence braucht. Das Gesamtpaket
-         "Microsoft.WindowsAppSDK" brächte KI/ML (ONNX Runtime), Widgets u. a. mit (~100 MB mehr).
-         Versionen entsprechen dem Gesamtpaket 1.8.260921001. -->
-    <PackageReference Include="Microsoft.WindowsAppSDK.Base" Version="1.8.251216001" />
-    <PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="1.8.260803002" />
-    <PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="1.8.260708001" />
-    <PackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="1.8.260803003" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260921001" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.9169" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
   </ItemGroup>
 
   <ItemGroup>

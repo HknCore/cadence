@@ -81,7 +81,7 @@ public sealed class SessionController : IDisposable
         _overlay = new OverlayWindow(GetOverlayFrame);
 
         // Frametimes im Hintergrund abholen – unabhaengig davon, ob das Fenster sichtbar ist.
-        _poll = new Timer(_ => Poll(), null, TimeSpan.FromMilliseconds(50), TimeSpan.FromMilliseconds(50));
+        _poll = new Timer(_ => Poll(), null, TimeSpan.FromMilliseconds(20), TimeSpan.FromMilliseconds(20));
     }
 
     public GameSession? Active { get; private set; }

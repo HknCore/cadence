@@ -8,7 +8,13 @@ namespace Cadence.Core;
 /// </summary>
 public sealed class ProfileStore
 {
-    internal sealed class FileModel
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter() },
+    };
+
+    private sealed class FileModel
     {
         public GameProfile Default { get; set; } = new() { DisplayName = "Alle anderen Spiele", TargetFps = 120 };
         public List<GameProfile> Games { get; set; } = [];
@@ -41,7 +47,7 @@ public sealed class ProfileStore
             try
             {
                 if (File.Exists(_path))
-                    _model = JsonSerializer.Deserialize(File.ReadAllText(_path), ProfileJson.Default.FileModel) ?? new();
+                    _model = JsonSerializer.Deserialize<FileModel>(File.ReadAllText(_path), JsonOptions) ?? new();
                 _model.Default.ApplyRefreshRate();
             }
             catch (JsonException)
@@ -59,7 +65,7 @@ public sealed class ProfileStore
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
             var tmp = _path + ".tmp";
-            File.WriteAllText(tmp, JsonSerializer.Serialize(_model, ProfileJson.Default.FileModel));
+            File.WriteAllText(tmp, JsonSerializer.Serialize(_model, JsonOptions));
             File.Move(tmp, _path, overwrite: true);
         }
         Changed?.Invoke(this, EventArgs.Empty);
@@ -95,11 +101,3 @@ public sealed class ProfileStore
         Save();
     }
 }
-
-/// <summary>
-/// Vorab erzeugter JSON-Code (statt Reflection). Noetig, weil die App beim Veroeffentlichen
-/// gekuerzt wird (PublishTrimmed) – dort ist Reflection-basiertes JSON abgeschaltet.
-/// </summary>
-[JsonSourceGenerationOptions(WriteIndented = true, UseStringEnumConverter = true)]
-[JsonSerializable(typeof(ProfileStore.FileModel))]
-internal sealed partial class ProfileJson : JsonSerializerContext;
