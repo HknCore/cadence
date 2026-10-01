@@ -3,7 +3,7 @@
     x:Class="Cadence.App.Pages.OverlayPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:local="using:Cadence.App.Controls"
     Background="Transparent">
 
     <ScrollViewer>
@@ -41,11 +41,8 @@
                         <TextBlock Text="Darstellung" />
                         <TextBlock x:Name="VariantHint" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" />
                     </StackPanel>
-                    <controls:Segmented x:Name="VariantBox" Grid.Column="1" VerticalAlignment="Center" SelectionChanged="Variant_Changed">
-                        <controls:SegmentedItem Content="Minimal" />
-                        <controls:SegmentedItem Content="Kompakt" />
-                        <controls:SegmentedItem Content="Detail" />
-                    </controls:Segmented>
+                    <local:SegmentedBar x:Name="VariantBox" Grid.Column="1" VerticalAlignment="Center" Items="Minimal|Kompakt|Detail"
+                                        AutomationProperties.Name="Darstellung" />
                 </Grid>
             </Border>
 

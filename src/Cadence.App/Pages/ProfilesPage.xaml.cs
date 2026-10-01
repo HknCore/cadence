@@ -95,16 +95,16 @@ public sealed partial class ProfilesPage : Page
     private void Switch_Toggled(object sender, RoutedEventArgs e)
     {
         if (_loading || _selected is null) return;
-        if (sender == AutoSwitch) _selected.AutoApply = AutoSwitch.IsOn;
-        else if (sender == HotkeySwitch) _selected.HotkeysEnabled = HotkeySwitch.IsOn;
-        else if (sender == RefreshSwitch)
+        if (ReferenceEquals(sender, AutoSwitch)) _selected.AutoApply = AutoSwitch.IsOn;
+        else if (ReferenceEquals(sender, HotkeySwitch)) _selected.HotkeysEnabled = HotkeySwitch.IsOn;
+        else if (ReferenceEquals(sender, RefreshSwitch))
         {
             _selected.MatchRefreshRate = RefreshSwitch.IsOn;
             _loading = true;
             FpsBox.Value = _selected.TargetFps;
             _loading = false;
         }
-        else if (sender == OverlaySwitch) _selected.OverlayEnabled = OverlaySwitch.IsOn;
+        else if (ReferenceEquals(sender, OverlaySwitch)) _selected.OverlayEnabled = OverlaySwitch.IsOn;
     }
 
     private async void Delete_Click(object sender, RoutedEventArgs e)

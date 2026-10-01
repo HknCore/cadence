@@ -18,6 +18,7 @@ public sealed partial class OverlayPage : Page
     public OverlayPage()
     {
         InitializeComponent();
+        VariantBox.SelectionChanged += Variant_Changed;
         Loaded += (_, _) =>
         {
             App.Controller.ActiveChanged += OnChanged; // Hotkey Strg + Alt + O
@@ -44,7 +45,7 @@ public sealed partial class OverlayPage : Page
         if (!_loading) App.Controller.OverlayEnabled = EnabledSwitch.IsOn;
     }
 
-    private void Variant_Changed(object sender, SelectionChangedEventArgs e)
+    private void Variant_Changed(object? sender, int index)
     {
         if (_loading || VariantBox.SelectedIndex < 0) return;
         App.Profiles.Overlay.Variant = (OverlayVariant)VariantBox.SelectedIndex;
