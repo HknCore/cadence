@@ -74,6 +74,13 @@
                                AutomationProperties.Name="Ziel-FPS"
                                Value="{x:Bind Vm.TargetFps, Mode=TwoWay}" />
                 </Grid>
+                <InfoBar Margin="20,0,20,16" Severity="Warning" Title="Ziel wird nicht erreicht"
+                         IsOpen="{x:Bind Vm.AdviceOpen, Mode=TwoWay}" Message="{x:Bind Vm.AdviceText, Mode=OneWay}"
+                         CloseButtonClick="Advice_Closed">
+                    <InfoBar.ActionButton>
+                        <Button Content="{x:Bind Vm.AdviceAction, Mode=OneWay}" Style="{StaticResource AccentButtonStyle}" Click="Advice_Apply" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
                 <Rectangle Height="1" Fill="{ThemeResource CardStrokeColorDefaultBrush}" />
                 <Grid Padding="20,16" ColumnSpacing="24">
                     <Grid.ColumnDefinitions>

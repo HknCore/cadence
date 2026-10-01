@@ -16,10 +16,21 @@ public partial class App : Application
     /// </summary>
     public static event Action<float[]>? FramesArrived;
 
+    /// <summary>Prüft laufend, ob das Ziel für das aktive Spiel zu hoch ist.</summary>
+    public static TargetAdvisor Advisor { get; } = new();
+
+    /// <summary>Die Empfehlung von <see cref="Advisor"/> hat sich geändert (UI-Thread).</summary>
+    public static event Action? AdviceChanged;
+
     internal static void PumpFrames()
     {
         var data = Controller.PollActive();
         FramesArrived?.Invoke(data);
+
+        var s = Controller.Active;
+        var limiting = s is not null && Controller.Enabled && s.Link.HookState == HookState.Active;
+        if (Advisor.Feed(data, s?.ProcessId ?? -1, s?.Profile.TargetFps ?? 0, limiting))
+            AdviceChanged?.Invoke();
     }
 
     // Der Installer erkennt am Mutex, dass Cadence laeuft, und bittet um Schliessen.

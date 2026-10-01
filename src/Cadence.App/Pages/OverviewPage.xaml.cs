@@ -71,6 +71,7 @@ public sealed partial class OverviewPage : Page
         c.ActiveChanged += OnActiveChanged;
         Vm.Refresh();
         App.FramesArrived += OnFrames;
+        App.AdviceChanged += Vm.RefreshAdvice;
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -80,7 +81,12 @@ public sealed partial class OverviewPage : Page
         c.SessionEnded -= OnSessionEnded;
         c.ActiveChanged -= OnActiveChanged;
         App.FramesArrived -= OnFrames;
+        App.AdviceChanged -= Vm.RefreshAdvice;
     }
+
+    private void Advice_Apply(object sender, RoutedEventArgs e) => Vm.ApplyAdvice();
+
+    private void Advice_Closed(InfoBar sender, object args) => Vm.DismissAdvice();
 
     private void OnSessionChanged(object? sender, Core.GameSession e) =>
         DispatcherQueue.TryEnqueue(() => { Graph.Clear(); Vm.Refresh(); });

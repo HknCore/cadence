@@ -131,6 +131,42 @@ public sealed class OverviewViewModel : ObservableObject
     public string Low01 { get => _low01; private set => SetProperty(ref _low01, value); }
     public string Deviation { get => _deviation; private set => SetProperty(ref _deviation, value); }
 
+    // ---- Hinweis: Ziel zu hoch -----------------------------------------
+    private bool _adviceOpen;
+    public bool AdviceOpen { get => _adviceOpen; set => SetProperty(ref _adviceOpen, value); }
+
+    private string _adviceText = "";
+    public string AdviceText { get => _adviceText; private set => SetProperty(ref _adviceText, value); }
+
+    private string _adviceAction = "";
+    public string AdviceAction { get => _adviceAction; private set => SetProperty(ref _adviceAction, value); }
+
+    public void RefreshAdvice()
+    {
+        var a = App.Advisor;
+        if (a.Recommendation is not { } rec || !HasGame)
+        {
+            AdviceOpen = false;
+            return;
+        }
+        AdviceText = $"Das Spiel schafft gerade nur etwa {a.AchievedFps:0} FPS. Liegt das Limit darüber, bremst Cadence nur die schnellen Bilder " +
+                     $"und die Bildzeiten werden unruhiger statt ruhiger. Empfohlen: {rec:0} FPS.";
+        AdviceAction = $"{rec:0} FPS übernehmen";
+        AdviceOpen = true;
+    }
+
+    public void ApplyAdvice()
+    {
+        if (App.Advisor.Recommendation is { } rec) TargetFps = rec;
+        AdviceOpen = false;
+    }
+
+    public void DismissAdvice()
+    {
+        App.Advisor.Dismiss();
+        AdviceOpen = false;
+    }
+
     /// <summary>Ziel-Frametime fuer den Graphen, null = unbegrenzt.</summary>
     public double? GraphTargetMs => HasGame && _c.Enabled ? 1000.0 / _targetFps : null;
 
@@ -140,6 +176,7 @@ public sealed class OverviewViewModel : ObservableObject
         OnPropertyChanged(nameof(HotkeyHint));
         var s = _c.Active;
         HasGame = s is not null;
+        RefreshAdvice();
         OnPropertyChanged(nameof(IsEnabled));
         OnPropertyChanged(nameof(EnabledLabel));
         if (s is null)
