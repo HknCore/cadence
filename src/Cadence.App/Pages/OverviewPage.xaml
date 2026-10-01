@@ -84,7 +84,7 @@
                         <TextBlock Text="Modus" />
                         <TextBlock Text="{x:Bind Vm.ModeDescription, Mode=OneWay}" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" />
                     </StackPanel>
-                    <controls:Segmented Grid.Column="1" VerticalAlignment="Center" MinWidth="408"
+                    <controls:Segmented Grid.Column="1" VerticalAlignment="Center"
                                         SelectedIndex="{x:Bind Vm.ModeIndex, Mode=TwoWay}">
                         <controls:SegmentedItem Content="Ausgewogen" />
                         <controls:SegmentedItem Content="Niedrige Latenz" />
