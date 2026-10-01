@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Cadence Showcase Shots</title>
+<style>
+@font-face{font-family:"UI";font-weight:400;src:url(node_modules/@fontsource/open-sans/files/open-sans-latin-400-normal.woff2)}
+@font-face{font-family:"UI";font-weight:600;src:url(node_modules/@fontsource/open-sans/files/open-sans-latin-600-normal.woff2)}
+@font-face{font-family:"UI";font-weight:700;src:url(node_modules/@fontsource/open-sans/files/open-sans-latin-700-normal.woff2)}
+@font-face{font-family:"Display";font-weight:600;src:url(node_modules/@fontsource/manrope/files/manrope-latin-600-normal.woff2)}
+@font-face{font-family:"Display";font-weight:700;src:url(node_modules/@fontsource/manrope/files/manrope-latin-700-normal.woff2)}
+@font-face{font-family:"Display";font-weight:800;src:url(node_modules/@fontsource/manrope/files/manrope-latin-800-normal.woff2)}
+:root{
+  --bg:#202020;--pane:#1C1C1C;--card:#2B2B2B;--card2:#262626;--line:#333333;--line2:#3A3A3A;
+  --text:#F3F3F3;--muted:#ABABAB;--faint:#8A8A8A;--acc:#B9A3FF;--acc2:#D3C5FF;--accdeep:#6F5FA8;--warn:#E0A458;--ink:#1A1033;
+}
+*{box-sizing:border-box}
+body{margin:0;background:transparent;font-family:"UI",sans-serif;color:var(--text);-webkit-font-smoothing:antialiased}
+.shot{position:relative;overflow:hidden}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- App-Fenster ---------- */
+.win{width:1280px;height:800px;display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.titlebar{height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding-left:16px;background:var(--pane)}
+.titlebar .brand{display:flex;align-items:center;gap:10px;font-size:12px}
+.wbtns{display:flex}.wbtns span{width:46px;height:44px;display:flex;align-items:center;justify-content:center;color:#C8C8C8}
+.body{flex:1;display:flex;min-height:0}
+.nav{width:232px;flex-shrink:0;padding:8px;display:flex;flex-direction:column;gap:2px;background:var(--pane)}
+.nav a{position:relative;display:flex;align-items:center;gap:12px;height:40px;padding:0 12px;border-radius:6px;font-size:14px;color:#C8C8C8;text-decoration:none}
+.nav a.on{background:#2D2D2D;color:var(--text)}
+.nav a.on:before{content:"";position:absolute;left:0;top:12px;width:3px;height:16px;border-radius:2px;background:var(--acc)}
+.nav .sp{flex:1}
+.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+main{flex:1;min-width:0;padding:28px 32px;display:flex;flex-direction:column;gap:20px}
+h1.t{margin:0;font-size:28px;font-weight:600;letter-spacing:-.01em}
+.cap{font-size:13px;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px}
+.row{display:flex;align-items:center;gap:24px;padding:18px 20px}
+.row+.row{border-top:1px solid #1F1F1F}
+.grow{flex:1}
+.seg{display:flex;gap:2px}
+.seg span{width:44px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:5px;font-size:13px;color:#C8C8C8}
+.seg span.on{background:var(--acc);color:var(--ink);font-weight:600}
+.stepper{display:flex;align-items:center;height:36px;border-radius:5px;background:#1F1F1F;border:1px solid var(--line2)}
+.stepper span{width:32px;text-align:center;color:#C8C8C8}.stepper b{width:44px;text-align:center;font-weight:600;font-size:15px}
+.modes{position:relative;display:flex;width:408px;padding:3px;border-radius:6px;background:#1F1F1F;border:1px solid var(--line2)}
+.modes span{flex:1;height:30px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--muted);border-radius:4px}
+.modes span.on{background:#3D3D3D;color:var(--text)}
+.switch{width:40px;height:20px;border-radius:10px;background:var(--acc);display:flex;align-items:center;padding:0 3px;justify-content:flex-end}
+.switch i{width:12px;height:12px;border-radius:6px;background:var(--ink)}
+.switch.off{background:transparent;border:1px solid #9A9A9A;justify-content:flex-start}.switch.off i{background:#CFCFCF}
+.stats{display:flex;border-top:1px solid var(--line);padding-top:14px}
+.stats div{flex:1;display:flex;flex-direction:column;gap:2px}
+.stats b{font-size:18px;font-weight:600}
+.btn{height:34px;padding:0 14px;border-radius:5px;border:1px solid var(--line2);background:#2F2F2F;color:var(--text);font-size:13px;display:inline-flex;align-items:center;gap:8px}
+.btn.acc{background:var(--acc);border-color:var(--acc);color:var(--ink);font-weight:600}
+
+/* ---------- Marketing ---------- */
+.mk{font-family:"Display",sans-serif}
+.panel{background:#161616;border-radius:16px;border:1px solid #262626}
+.label{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ======================================================= HERO -->
+<div class="shot panel" id="hero" style="width:1280px;height:600px">
+  <svg width="1280" height="600" style="position:absolute;inset:0" aria-hidden="true">
+    <defs>
+      <radialGradient id="glow" cx="78%" cy="55%" r="45%"><stop offset="0" stop-color="#B9A3FF" stop-opacity=".16"/><stop offset="1" stop-color="#B9A3FF" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="1280" height="600" fill="url(#glow)"/>
+    <g stroke="#232323" stroke-width="1">
+      <line x1="0" x2="1280" y1="150" y2="150"/><line x1="0" x2="1280" y1="300" y2="300"/><line x1="0" x2="1280" y1="450" y2="450"/>
+    </g>
+  </svg>
+  <div style="position:absolute;left:72px;top:0;bottom:0;width:520px;display:flex;flex-direction:column;justify-content:center;gap:26px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <svg width="36" height="36" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg>
+      <span class="mk" style="font-size:30px;font-weight:800;letter-spacing:-.01em">Cadence</span>
+    </div>
+    <div class="mk" style="font-size:62px;line-height:1.02;font-weight:800;letter-spacing:-.03em">Jeder Frame.<br><span style="color:var(--acc)">Exakt im Takt.</span></div>
+    <div style="font-size:19px;line-height:1.5;color:#C8C8C8;max-width:470px">Der präzise FPS-Limiter für Windows. Er macht aus schwankenden Bildraten ein ruhiges, gleichmässiges Bild – mit einem Klick.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <span style="padding:7px 13px;border-radius:999px;border:1px solid #3A3A3A;font-size:13px;color:#C8C8C8">DirectX 10 · 11 · 12</span>
+      <span style="padding:7px 13px;border-radius:999px;border:1px solid #3A3A3A;font-size:13px;color:#C8C8C8">OpenGL</span>
+      <span style="padding:7px 13px;border-radius:999px;border:1px solid #3A3A3A;font-size:13px;color:#C8C8C8">Windows 10 / 11</span>
+      <span style="padding:7px 13px;border-radius:999px;border:1px solid #3A3A3A;font-size:13px;color:#C8C8C8">Open Source</span>
+    </div>
+  </div>
+  <!-- Mini-Fenster -->
+  <div style="position:absolute;left:660px;top:92px;width:600px;height:416px;border-radius:10px;border:1px solid #3A3A3A;background:var(--bg);box-shadow:0 30px 80px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column">
+    <div style="height:30px;background:var(--pane);display:flex;align-items:center;gap:8px;padding-left:12px;font-size:11px">
+      <svg width="12" height="12" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg>Cadence
+    </div>
+    <div style="padding:18px 22px;display:flex;flex-direction:column;gap:14px;flex:1">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between">
+        <div><div class="cap" style="font-size:11px;display:flex;align-items:center;gap:6px"><i style="width:6px;height:6px;border-radius:3px;background:var(--acc)"></i>Läuft · Limit aktiv</div><div style="font-size:21px;font-weight:600">Cyberpunk 2077</div></div>
+        <div style="text-align:right"><div class="num" style="font-size:44px;font-weight:600;line-height:1">60</div><div class="cap" style="font-size:11px">FPS · 16.67 ms</div></div>
+      </div>
+      <div class="card" style="flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:12px;display:flex;justify-content:space-between"><span>Frametime</span><span class="num">16.67 ms</span></div>
+        <svg viewBox="0 0 540 170" style="flex:1;width:100%" id="heroGraph"></svg>
+      </div>
+      <div style="display:flex;gap:18px">
+        <div class="cap" style="font-size:11px">Ø FPS<br><b class="num" style="color:var(--text);font-size:15px">60.0</b></div>
+        <div class="cap" style="font-size:11px">1 % Low<br><b class="num" style="color:var(--text);font-size:15px">59.6</b></div>
+        <div class="cap" style="font-size:11px">0,1 % Low<br><b class="num" style="color:var(--text);font-size:15px">58.9</b></div>
+        <div class="cap" style="font-size:11px">Abweichung<br><b class="num" style="color:var(--acc);font-size:15px">± 0.05 ms</b></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================= PACING-VERGLEICH -->
+<div class="shot panel" id="pacing" style="width:1280px;height:470px;padding:44px 52px">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:26px">
+    <div>
+      <div class="label">Frame Pacing</div>
+      <div class="mk" style="font-size:34px;font-weight:800;letter-spacing:-.02em;margin-top:8px">Gleiche FPS. Ganz anderes Gefühl.</div>
+    </div>
+    <div class="cap">Frametime in ms · schematische Darstellung bei 60 FPS</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div class="card" style="padding:20px 22px;background:#1E1E1E">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:16px;font-weight:600">Typischer Limiter</span><span class="num" style="color:var(--warn);font-size:14px">± 1.1 ms · Mikroruckler</span></div>
+      <svg viewBox="0 0 540 220" width="100%" id="gBad" style="margin-top:10px"></svg>
+    </div>
+    <div class="card" style="padding:20px 22px;background:#1E1E1E;border-color:#4A3F73">
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:16px;font-weight:600">Cadence</span><span class="num" style="color:var(--acc);font-size:14px">± 0.05 ms · flach wie ein Lineal</span></div>
+      <svg viewBox="0 0 540 220" width="100%" id="gGood" style="margin-top:10px"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================= MODI -->
+<div class="shot panel" id="modes" style="width:1280px;height:448px;padding:44px 52px">
+  <div class="label">Drei Modi</div>
+  <div class="mk" style="font-size:34px;font-weight:800;letter-spacing:-.02em;margin:8px 0 28px">Du entscheidest, wo gewartet wird.</div>
+  <div id="modeRows" style="display:flex;flex-direction:column;gap:18px"></div>
+  <div style="display:flex;gap:22px;margin-top:22px;font-size:13px;color:var(--muted)">
+    <span style="display:flex;align-items:center;gap:8px"><i style="width:14px;height:14px;border-radius:3px;background:#3B3B3B"></i>Spiel liest Eingaben und berechnet das Bild</span>
+    <span style="display:flex;align-items:center;gap:8px"><i style="width:14px;height:14px;border-radius:3px;background:repeating-linear-gradient(45deg,#4A3F73 0 4px,#3A3159 4px 8px)"></i>Cadence wartet</span>
+    <span style="display:flex;align-items:center;gap:8px"><i style="width:3px;height:16px;background:var(--acc)"></i>Bild erscheint</span>
+  </div>
+</div>
+
+<!-- ======================================================= OVERLAY -->
+<div class="shot" id="overlay" style="width:1280px;height:560px;border-radius:16px;background:#2A2C30">
+  <svg width="1280" height="560" style="position:absolute;inset:0" aria-hidden="true">
+    <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2D3038"/><stop offset="1" stop-color="#3A3540"/></linearGradient></defs>
+    <rect width="1280" height="560" fill="url(#sky)"/>
+    <g fill="#24262B"><rect x="80" y="170" width="150" height="390"/><rect x="250" y="250" width="110" height="310"/><rect x="380" y="120" width="140" height="440"/><rect x="880" y="260" width="140" height="300"/><rect x="1060" y="240" width="160" height="320"/></g>
+    <g fill="#1E2024"><rect x="0" y="420" width="1280" height="140"/></g>
+    <g fill="#B9A3FF" opacity=".55"><rect x="410" y="160" width="10" height="14"/><rect x="440" y="200" width="10" height="14"/><rect x="500" y="240" width="10" height="14"/><rect x="910" y="300" width="10" height="14"/><rect x="1090" y="290" width="10" height="14"/><rect x="1150" y="340" width="10" height="14"/></g>
+  </svg>
+  <!-- Minimal -->
+  <div style="position:absolute;left:28px;top:28px;display:flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:16px;background:rgba(20,20,20,.8)">
+    <i style="width:7px;height:7px;border-radius:4px;background:var(--acc)"></i><b class="num" style="font-size:15px;font-weight:600">60</b><span style="font-size:12px;color:#BDBDBD">FPS</span>
+  </div>
+  <!-- Kompakt -->
+  <div style="position:absolute;left:540px;top:28px;width:200px;padding:12px 14px;border-radius:8px;background:rgba(20,20,20,.8);border:1px solid rgba(255,255,255,.06)">
+    <div style="display:flex;align-items:baseline;gap:6px"><b class="num" style="font-size:26px;font-weight:600;line-height:1">60</b><span style="font-size:12px;color:#BDBDBD;flex:1">FPS</span><span class="num" style="font-size:12px;color:#BDBDBD">16.67 ms</span></div>
+    <svg viewBox="0 0 172 22" width="172" height="22" class="mini" style="margin-top:10px"></svg>
+  </div>
+  <!-- Detail -->
+  <div style="position:absolute;right:28px;top:28px;width:260px;padding:14px 16px;border-radius:8px;background:rgba(20,20,20,.8);border:1px solid rgba(255,255,255,.06)">
+    <div style="display:flex;align-items:baseline;gap:6px"><b class="num" style="font-size:30px;font-weight:600;line-height:1">60</b><span style="font-size:12px;color:#BDBDBD;flex:1">FPS</span><span style="font-size:12px;color:var(--acc);font-weight:600">Ziel 60</span></div>
+    <svg viewBox="0 0 228 28" width="228" height="28" class="mini" style="margin-top:10px"></svg>
+    <div class="num" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;margin-top:10px">
+      <span><span style="color:#9E9E9E">Frametime</span><br><b style="font-weight:600;font-size:13px">16.67 ms</b></span>
+      <span><span style="color:#9E9E9E">1 % Low</span><br><b style="font-weight:600;font-size:13px">59.6</b></span>
+      <span><span style="color:#9E9E9E">Modus</span><br><b style="font-weight:600;font-size:13px">Ausgew.</b></span>
+    </div>
+  </div>
+  <!-- Labels -->
+  <div style="position:absolute;left:28px;top:72px;font-size:12px;color:#C8C8C8;letter-spacing:.1em">MINIMAL</div>
+  <div style="position:absolute;left:540px;top:128px;font-size:12px;color:#C8C8C8;letter-spacing:.1em">KOMPAKT</div>
+  <div style="position:absolute;left:992px;top:188px;font-size:12px;color:#C8C8C8;letter-spacing:.1em">DETAIL</div>
+  <!-- Toast -->
+  <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:40px;display:flex;align-items:center;gap:10px;height:42px;padding:0 18px;border-radius:8px;background:rgba(20,20,20,.85);border:1px solid rgba(255,255,255,.06);font-size:14px;white-space:nowrap">
+    <svg width="14" height="14" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg>
+    Profil geladen: <span style="color:var(--acc2)">Cyberpunk 2077 · 60 FPS</span>
+  </div>
+</div>
+
+<!-- ======================================================= APP: Übersicht -->
+<div class="shot" id="app-overview" style="width:1280px;border-radius:10px"><div class="win">
+  <div class="titlebar"><div class="brand"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg>Cadence</div><div class="wbtns"><span>–</span><span>□</span><span>✕</span></div></div>
+  <div class="body">
+    <nav class="nav" data-on="0"></nav>
+    <main>
+      <div style="display:flex;align-items:flex-end;gap:16px">
+        <div class="grow"><div class="cap" style="display:flex;align-items:center;gap:8px"><i style="width:7px;height:7px;border-radius:4px;background:var(--acc)"></i>Läuft · Limit aktiv</div>
+          <h1 class="t">Cyberpunk 2077</h1><div class="cap">Cyberpunk2077.exe · DirectX 10–12 · eigenes Profil</div></div>
+        <div style="display:flex;align-items:center;gap:12px;font-size:14px">Limiter an<span class="switch"><i></i></span></div>
+      </div>
+      <div class="card">
+        <div class="row"><div class="grow"><div style="font-size:14px">Ziel-FPS</div><div class="cap" style="font-size:12px">16.67 ms pro Bild · im Spiel mit Strg + Alt + ↑ / ↓</div></div>
+          <div class="seg num"><span>30</span><span>40</span><span>45</span><span class="on">60</span><span>90</span><span>120</span><span>144</span></div>
+          <div class="stepper num"><span>–</span><b>60</b><span>+</span></div></div>
+        <div class="row"><div class="grow"><div style="font-size:14px">Modus</div><div class="cap" style="font-size:12px">Gleichmässige Frametimes, funktioniert mit fast jedem Spiel.</div></div>
+          <div class="modes"><span class="on">Ausgewogen</span><span>Niedrige Latenz</span><span>Max. Glätte</span></div></div>
+      </div>
+      <div class="card" style="flex:1;padding:18px 20px 16px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:baseline;gap:8px"><span class="grow" style="font-size:14px">Frametime</span><b class="num" style="font-size:22px;font-weight:600">16.67</b><span class="cap">ms</span></div>
+        <svg viewBox="0 0 940 230" style="flex:1;width:100%" class="bigGraph" data-mode="good"></svg>
+        <div class="stats num">
+          <div><span class="cap" style="font-size:12px">Ø FPS</span><b>60.0</b></div>
+          <div><span class="cap" style="font-size:12px">1 % Low</span><b>59.6</b></div>
+          <div><span class="cap" style="font-size:12px">0,1 % Low</span><b>58.9</b></div>
+          <div><span class="cap" style="font-size:12px">Abweichung</span><b style="color:var(--acc)">± 0.05 ms</b></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div></div>
+
+<!-- ======================================================= APP: Profile -->
+<div class="shot" id="app-profiles" style="width:1280px;border-radius:10px"><div class="win">
+  <div class="titlebar"><div class="brand"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg>Cadence</div><div class="wbtns"><span>–</span><span>□</span><span>✕</span></div></div>
+  <div class="body">
+    <nav class="nav" data-on="1"></nav>
+    <main>
+      <div style="display:flex;align-items:center;gap:12px"><h1 class="t grow">Profile</h1>
+        <div style="width:240px;height:34px;border-radius:5px;background:#1F1F1F;border:1px solid var(--line2);display:flex;align-items:center;padding:0 10px;font-size:13px;color:var(--faint)">Suchen</div>
+        <span class="btn acc">Profil hinzufügen</span></div>
+      <div style="display:flex;gap:20px;flex:1;min-height:0">
+        <div class="card grow" style="padding:4px;align-self:flex-start" id="profileList"></div>
+        <div class="card" style="width:330px;padding:20px;display:flex;flex-direction:column;gap:16px">
+          <div><div style="font-size:20px;font-weight:600">Cyberpunk 2077</div><div class="cap">Cyberpunk2077.exe</div></div>
+          <div><div class="cap" style="font-size:12px;margin-bottom:6px">Ziel-FPS</div><div class="stepper num" style="width:150px"><span>–</span><b style="flex:1">60</b><span>+</span></div></div>
+          <div><div class="cap" style="font-size:12px;margin-bottom:6px">Modus</div><div style="height:34px;border-radius:5px;background:#2F2F2F;border:1px solid var(--line2);display:flex;align-items:center;padding:0 12px;font-size:13px">Ausgewogen</div></div>
+          <div id="toggles" style="display:flex;flex-direction:column"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div></div>
+
+<!-- ======================================================= APP: Statistik -->
+<div class="shot" id="app-stats" style="width:1280px;border-radius:10px"><div class="win">
+  <div class="titlebar"><div class="brand"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg>Cadence</div><div class="wbtns"><span>–</span><span>□</span><span>✕</span></div></div>
+  <div class="body">
+    <nav class="nav" data-on="2"></nav>
+    <main>
+      <div style="display:flex;align-items:flex-end;gap:8px"><div class="grow"><h1 class="t">Statistiken</h1><div class="cap">Cyberpunk 2077 · 60 FPS · Ausgewogen · Aufnahme von 5:00 min</div></div>
+        <span class="btn">Als CSV exportieren</span><span class="btn">Als Bild speichern</span><span class="btn acc"><i style="width:8px;height:8px;border-radius:4px;background:var(--ink)"></i>Aufnehmen</span></div>
+      <div class="card" style="display:flex;padding:18px 20px" >
+        <div class="grow"><div class="cap" style="font-size:12px">Ø FPS</div><b class="num" style="font-size:24px;font-weight:600">59.99</b></div>
+        <div class="grow"><div class="cap" style="font-size:12px">1 % Low</div><b class="num" style="font-size:24px;font-weight:600">59.62</b></div>
+        <div class="grow"><div class="cap" style="font-size:12px">0,1 % Low</div><b class="num" style="font-size:24px;font-weight:600">58.91</b></div>
+        <div class="grow"><div class="cap" style="font-size:12px">σ Frametime</div><b class="num" style="font-size:24px;font-weight:600;color:var(--acc)">0.05 ms</b></div>
+        <div class="grow"><div class="cap" style="font-size:12px">Stotterer</div><b class="num" style="font-size:24px;font-weight:600;color:var(--acc)">0</b></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1.25fr;gap:20px;flex:1;min-height:0">
+        <div class="card" style="padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex"><span class="grow" style="font-size:14px">Verteilung der Frametimes</span><span class="cap" style="font-size:12px">Ziel 16.67 ms</span></div>
+          <div id="hist" style="flex:1;display:flex;align-items:flex-end;gap:6px;border-bottom:1px solid var(--line2)"></div>
+          <div id="histL" class="num" style="display:flex;gap:6px;font-size:11px;color:var(--faint)"></div>
+        </div>
+        <div class="card" style="padding:18px 20px">
+          <div style="font-size:14px;margin-bottom:6px">Aufnahmen dieser Sitzung</div>
+          <table class="num" style="width:100%;border-collapse:collapse;font-size:13px">
+            <tr style="color:var(--muted);font-size:12px;text-align:right"><td style="text-align:left;padding:10px 0">Aufnahme</td><td>Ø FPS</td><td>1 % Low</td><td>0,1 % Low</td><td>σ</td><td>Stotterer</td></tr>
+            <tr style="border-top:1px solid var(--line);text-align:right"><td style="text-align:left;padding:14px 0"><i style="display:inline-block;width:8px;height:8px;border-radius:4px;background:var(--acc);margin-right:8px"></i>Cadence · 60</td><td>59.99</td><td>59.62</td><td>58.91</td><td>0.05 ms</td><td>0</td></tr>
+            <tr style="border-top:1px solid var(--line);text-align:right"><td style="text-align:left;padding:14px 0"><i style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#6E6E6E;margin-right:8px"></i>Spiel-Limit · 60</td><td>59.87</td><td style="color:var(--warn)">54.10</td><td style="color:var(--warn)">41.32</td><td style="color:var(--warn)">1.12 ms</td><td style="color:var(--warn)">7</td></tr>
+            <tr style="border-top:1px solid var(--line);text-align:right"><td style="text-align:left;padding:14px 0"><i style="display:inline-block;width:8px;height:8px;border-radius:4px;background:#6E6E6E;margin-right:8px"></i>Ohne Limit</td><td>97.30</td><td style="color:var(--warn)">61.20</td><td style="color:var(--warn)">38.50</td><td style="color:var(--warn)">2.91 ms</td><td style="color:var(--warn)">23</td></tr>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div></div>
+
+<!-- ======================================================= TRAY -->
+<div class="shot" id="tray" style="width:560px;height:450px;border-radius:16px;background:#161616;border:1px solid #262626">
+  <div style="position:absolute;left:60px;top:28px;width:250px;background:#2C2C2C;border:1px solid #3A3A3A;border-radius:8px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:4px;font-size:13px" id="trayMenu"></div>
+  <div style="position:absolute;left:0;right:0;bottom:0;height:48px;background:#1C1C1C;border-top:1px solid #2A2A2A;display:flex;align-items:center;justify-content:flex-end;gap:14px;padding:0 18px;color:#C8C8C8;font-size:12px">
+    <span style="width:34px;height:34px;border-radius:5px;background:#2D2D2D;display:flex;align-items:center;justify-content:center;margin-right:250px"><svg width="16" height="16" viewBox="0 0 16 16"><rect x="1.5" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="6.8" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/><rect x="12.1" y="3" width="2.4" height="10" rx="1.2" fill="#B9A3FF"/></svg></span>
+    <span class="num" style="text-align:right;line-height:1.3">21:38<br>01.10.2026</span>
+  </div>
+</div>
+
+<script>
+// ---------- Hilfen ----------
+const NS="http://www.w3.org/2000/svg";
+function rnd(i){const x=Math.sin(i*12.9898)*43758.5453;return x-Math.floor(x)}
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e}
+function series(n,base,jitter,spikes){const a=[];for(let i=0;i<n;i++){let v=base+(rnd(i+7)-.5)*jitter;if(spikes){if(i%23===5)v+=4.2;if(i%41===17)v+=7.5;if(i%17===9)v-=2.4}a.push(v)}return a}
+function graph(svg,data,{w,h,min,max,color,target,axis=true,area=true,stroke=2}){
+  const x0=axis?32:0;const Y=v=>h-((v-min)/(max-min))*(h-10)-4;
+  if(axis){for(let k=0;k<=4;k++){const v=min+(max-min)*k/4;const y=Y(v);el("line",{x1:x0,x2:w,y1:y,y2:y,stroke:"#2C2C2C"},svg);const t=el("text",{x:0,y:y+4,fill:"#8A8A8A","font-size":11,"font-family":"UI"},svg);t.textContent=v.toFixed(0)}}
+  const pts=data.map((v,i)=>[x0+i*(w-x0)/(data.length-1),Y(v)]);
+  if(area)el("polygon",{points:`${x0},${h} `+pts.map(p=>p.join(",")).join(" ")+` ${w},${h}`,fill:color,"fill-opacity":.045},svg);
+  if(target)el("line",{x1:x0,x2:w,y1:Y(target),y2:Y(target),stroke:"#B9A3FF","stroke-dasharray":"3 5",opacity:.7},svg);
+  el("polyline",{points:pts.map(p=>p.join(",")).join(" "),fill:"none",stroke:color,"stroke-width":stroke,"stroke-linejoin":"round","stroke-linecap":"round"},svg);
+}
+const NAV=[["Übersicht",'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-4"/>'],["Profile",'<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/>'],["Statistiken",'<path d="M5 20V11"/><path d="M12 20V4"/><path d="M19 20v-7"/>'],["Overlay",'<rect x="3" y="4" width="18" height="13" rx="2"/><rect x="6" y="7" width="6" height="4" rx="1"/><path d="M9 21h6"/>']];
+document.querySelectorAll("nav.nav").forEach(n=>{const on=+n.dataset.on;n.innerHTML=NAV.map((x,i)=>`<a class="${i===on?"on":""}"><svg class="ic" viewBox="0 0 24 24">${x[1]}</svg>${x[0]}</a>`).join("")+`<div class="sp"></div><a><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h10"/><path d="M18 7h2"/><circle cx="16" cy="7" r="2"/><path d="M4 17h2"/><path d="M10 17h10"/><circle cx="8" cy="17" r="2"/></svg>Einstellungen</a>`});
+
+// ---------- Graphen ----------
+graph(document.getElementById("heroGraph"),series(120,16.67,.14),{w:540,h:170,min:0,max:40,color:"#B9A3FF",target:16.67,axis:true});
+graph(document.getElementById("gBad"),series(110,16.67,2.2,true),{w:540,h:220,min:8,max:28,color:"#E0A458",target:16.67});
+graph(document.getElementById("gGood"),series(110,16.67,.12),{w:540,h:220,min:8,max:28,color:"#B9A3FF",target:16.67});
+document.querySelectorAll(".bigGraph").forEach(s=>graph(s,series(160,16.67,.14),{w:940,h:230,min:0,max:40,color:"#B9A3FF",target:16.67}));
+document.querySelectorAll("svg.mini").forEach((s,j)=>{const w=+s.getAttribute("width"),h=+s.getAttribute("height");graph(s,series(60,16.67,.5).map((v,i)=>v+(rnd(i*3+j)-.5)*.3),{w,h,min:14.67,max:18.67,color:"#B9A3FF",axis:false,area:false,stroke:1.5})});
+
+// ---------- Modi ----------
+(function(){
+  const rows=[["Ausgewogen","Wartet vor der Bildausgabe. Jedes Bild erscheint im exakten Takt.","before"],["Niedrige Latenz","Wartet nach der Ausgabe. Eingaben werden so spät wie möglich gelesen.","after"],["Max. Glätte","Wie Ausgewogen, mit längerem Präzisionsfenster für die flachste Kurve.","beforeLong"]];
+  const host=document.getElementById("modeRows");
+  rows.forEach(([name,desc,kind])=>{
+    const r=document.createElement("div");r.style.cssText="display:grid;grid-template-columns:250px 1fr;gap:28px;align-items:center";
+    r.innerHTML=`<div><div style="font-size:17px;font-weight:600">${name}</div><div class="cap" style="margin-top:4px;line-height:1.45">${desc}</div></div>`;
+    const svg=el("svg",{viewBox:"0 0 900 64",width:900,height:64});r.appendChild(svg);host.appendChild(r);
+    const period=300;
+    el("defs",{},svg).innerHTML='<pattern id="h" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="#3A3159"/><rect width="4" height="8" fill="#4A3F73"/></pattern>';
+    for(let f=0;f<3;f++){
+      const x=f*period; const work=150+ (f===1?35:0);
+      if(kind==="after"){
+        el("rect",{x:x+4,y:14,width:period-work-8,height:36,rx:5,fill:"url(#h)"},svg);
+        el("rect",{x:x+period-work,y:14,width:work-4,height:36,rx:5,fill:"#3B3B3B"},svg);
+        el("rect",{x:x+period-2,y:4,width:3,height:56,rx:1.5,fill:"#B9A3FF"},svg);
+      }else{
+        el("rect",{x:x+4,y:14,width:work,height:36,rx:5,fill:"#3B3B3B"},svg);
+        el("rect",{x:x+work+8,y:14,width:period-work-12,height:36,rx:5,fill:"url(#h)"},svg);
+        if(kind==="beforeLong")el("rect",{x:x+period-40,y:14,width:32,height:36,rx:5,fill:"#6F5FA8","fill-opacity":.6},svg);
+        el("rect",{x:x+period-2,y:4,width:3,height:56,rx:1.5,fill:"#B9A3FF"},svg);
+      }
+    }
+  });
+})();
+
+// ---------- Profile ----------
+(function(){
+  const rows=[["Cyberpunk 2077","Cyberpunk2077.exe","DX12","60","Ausgewogen",1],["Elden Ring","eldenring.exe","DX12","60","Max. Glätte"],["Baldur's Gate 3","bg3.exe","Vulkan","90","Ausgewogen"],["Red Dead Redemption 2","RDR2.exe","DX12","45","Max. Glätte"],["Alan Wake 2","AlanWake2.exe","DX12","40","Niedrige Latenz"],["Alle anderen Spiele","Standard, wenn ein Spiel kein eigenes Profil hat","","144","Monitor · Ausgewogen"]];
+  document.getElementById("profileList").innerHTML=rows.map(r=>`<div style="position:relative;display:grid;grid-template-columns:2.6fr .7fr .6fr 1.4fr;gap:12px;align-items:center;height:58px;padding:0 18px;border-radius:6px;${r[5]?"background:#333333":""}">${r[5]?'<i style="position:absolute;left:0;top:20px;width:3px;height:18px;border-radius:2px;background:#B9A3FF"></i>':""}<div><div style="font-size:14px">${r[0]}</div><div class="cap" style="font-size:12px">${r[1]}</div></div><span class="cap">${r[2]}</span><span class="num" style="font-size:14px">${r[3]}</span><span class="cap" style="color:#C8C8C8">${r[4]}</span></div>`).join("");
+  const t=[["An Bildwiederholrate anpassen (144 Hz)",false],["Automatisch anwenden",true],["Overlay im Spiel",true],["Hotkeys im Spiel",true]];
+  document.getElementById("toggles").innerHTML=t.map(([l,on])=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #333"><span class="grow" style="font-size:13px">${l}</span><span class="switch ${on?"":"off"}"><i></i></span></div>`).join("");
+})();
+
+// ---------- Histogramm ----------
+(function(){
+  const c=[0.2,1.1,6.4,24.8,38.9,21.7,5.6,1.1,0.2],l=["16.47","16.52","16.57","16.62","16.67","16.72","16.77","16.82","16.87"];
+  document.getElementById("hist").innerHTML=c.map((v,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px"><span class="num" style="font-size:11px;color:#ABABAB">${v.toFixed(1)}%</span><div style="width:100%;height:${Math.max(2,v/38.9*240)}px;border-radius:3px 3px 0 0;background:${i===4?"#B9A3FF":"#6F5FA8"}"></div></div>`).join("");
+  document.getElementById("histL").innerHTML=l.map(x=>`<span style="flex:1;text-align:center">${x}</span>`).join("");
+})();
+
+// ---------- Tray ----------
+(function(){
+  const items=[["Cadence öffnen",0,1],["-"],["Cyberpunk 2077",0,0,1],["Limiter aktiv",1],["Ziel-FPS (60)",0,0,0,1],["Modus",0,0,0,1],["Overlay anzeigen",1],["Aufnahme starten"],["-"],["Beenden"]];
+  document.getElementById("trayMenu").innerHTML=items.map(([t,check,bold,dis,sub])=>t==="-"?'<div style="height:1px;background:#3A3A3A;margin:4px 6px"></div>':`<div style="display:flex;align-items:center;height:30px;padding:0 10px 0 6px;border-radius:4px;${t==="Ziel-FPS (60)"?"background:#383838":""};color:${dis?"#7A7A7A":"#F3F3F3"};font-weight:${bold?600:400}"><span style="width:22px;color:#B9A3FF">${check?"✓":""}</span><span style="flex:1">${t}</span>${sub?'<span style="color:#ABABAB">›</span>':""}</div>`).join("");
+  // Untermenue
+  const sub=document.createElement("div");sub.style.cssText="position:absolute;left:312px;top:150px;width:120px;background:#2C2C2C;border:1px solid #3A3A3A;border-radius:8px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:4px;font-size:13px";
+  sub.innerHTML=[30,40,45,60,72,90,120,144].map(v=>`<div class="num" style="display:flex;align-items:center;height:28px;padding:0 10px 0 6px;border-radius:4px;${v===60?"background:#383838":""}"><span style="width:22px;color:#B9A3FF">${v===60?"✓":""}</span>${v} FPS</div>`).join("");
+  document.getElementById("tray").appendChild(sub);
+})();
+</script>
+</body>
+</html>
