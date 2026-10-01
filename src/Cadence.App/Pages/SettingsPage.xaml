@@ -106,6 +106,21 @@
                               Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed" />
                 </Grid>
             </Border>
+
+            <Border Style="{StaticResource CardStyle}" Padding="20,14">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Problem melden" />
+                        <TextBlock x:Name="ReportHint" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"
+                                   Text="Kopiert einen Diagnosebericht (Version, System, aktives Spiel, Fehlerprotokoll) und öffnet ein neues Issue auf GitHub." />
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="Problem melden" Click="Report_Click" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </Page>

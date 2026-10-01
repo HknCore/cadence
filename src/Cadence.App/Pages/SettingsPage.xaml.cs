@@ -212,4 +212,19 @@ public sealed partial class SettingsPage : Page
         else if (result.Success) App.MainWindow.ShowInfo("Cadence ist aktuell", $"Version {MainWindow.AppVersion} ist die neueste.");
         else App.MainWindow.ShowError(result.Error ?? "Update-Prüfung fehlgeschlagen.");
     }
+
+    // ------------------------------------------------------------ Problem melden
+    private void Report_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            DiagnosticsReport.CopyAndOpenIssue();
+            ReportHint.Text = "Bericht kopiert. Füge ihn im geöffneten GitHub-Issue mit Strg + V ein.";
+        }
+        catch (Exception ex)
+        {
+            CrashReporter.Log("Problem melden", ex);
+            App.MainWindow.ShowError("Bericht konnte nicht erstellt werden: " + ex.Message);
+        }
+    }
 }
