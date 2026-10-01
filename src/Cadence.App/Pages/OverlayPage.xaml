@@ -24,7 +24,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Overlay im Spiel anzeigen" />
-                        <TextBlock Text="Ein- und ausblenden auch im Spiel mit Strg + Alt + O" Style="{StaticResource CaptionStyle}" />
+                        <TextBlock x:Name="OverlayHotkeyHint" Style="{StaticResource CaptionStyle}" />
                     </StackPanel>
                     <ToggleSwitch x:Name="EnabledSwitch" Grid.Column="1" OnContent="" OffContent="" MinWidth="0"
                                   AutomationProperties.Name="Overlay anzeigen" Toggled="Enabled_Toggled" />

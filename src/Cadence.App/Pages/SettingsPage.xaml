@@ -30,10 +30,22 @@
                 </Grid>
             </Border>
 
+            <!-- Tastenkürzel -->
             <Border Style="{StaticResource CardStyle}" Padding="20,14">
-                <StackPanel Spacing="2">
-                    <TextBlock Text="Hotkeys" />
-                    <TextBlock x:Name="HotkeyStatus" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" />
+                <StackPanel Spacing="10">
+                    <Grid ColumnSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="2" VerticalAlignment="Center">
+                            <TextBlock Text="Tastenkürzel" />
+                            <TextBlock x:Name="HotkeyStatus" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"
+                                       Text="Auf ein Kürzel klicken und die neue Tastenkombination drücken. Esc bricht ab." />
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Standard" Click="ResetHotkeys_Click" VerticalAlignment="Center" />
+                    </Grid>
+                    <StackPanel x:Name="HotkeyRows" Spacing="6" />
                 </StackPanel>
             </Border>
 

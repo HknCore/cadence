@@ -70,6 +70,25 @@ public sealed class OverviewViewModel : ObservableObject
         }
     }
 
+    /// <summary>" · im Spiel mit Strg + Alt + ↑ / ↓" – folgt der eigenen Belegung.</summary>
+    public string HotkeyHint
+    {
+        get
+        {
+            var s = App.Profiles.Settings;
+            var up = s.Hotkey(HotkeyAction.TargetUp);
+            var down = s.Hotkey(HotkeyAction.TargetDown);
+            if (up.IsEmpty && down.IsEmpty) return "";
+            if (!up.IsEmpty && !down.IsEmpty && up.Modifiers == down.Modifiers)
+            {
+                var mods = up.ToString();
+                mods = mods[..mods.LastIndexOf(" + ", StringComparison.Ordinal)];
+                return $" · im Spiel mit {mods} + {HotkeyBinding.KeyName(up.Key)} / {HotkeyBinding.KeyName(down.Key)}";
+            }
+            return $" · im Spiel mit {(up.IsEmpty ? down : up)}";
+        }
+    }
+
     public string TargetFrametime => $"{1000.0 / _targetFps:0.00} ms";
 
     /// <summary>"Eigener Wert: 200 FPS · 5.00 ms" bzw. "16.67 ms" – zeigt klar, was gerade gilt.</summary>
@@ -118,6 +137,7 @@ public sealed class OverviewViewModel : ObservableObject
     /// <summary>Aktive Sitzung neu einlesen (Spielstart, -ende, Hotkey).</summary>
     public void Refresh()
     {
+        OnPropertyChanged(nameof(HotkeyHint));
         var s = _c.Active;
         HasGame = s is not null;
         OnPropertyChanged(nameof(IsEnabled));

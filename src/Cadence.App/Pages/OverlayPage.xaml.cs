@@ -20,7 +20,7 @@ public sealed partial class OverlayPage : Page
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            App.Controller.ActiveChanged += OnChanged; // Hotkey Strg + Alt + O
+            App.Controller.ActiveChanged += OnChanged; // z. B. per Tastenkürzel
             Load();
         };
         Unloaded += (_, _) => App.Controller.ActiveChanged -= OnChanged;
@@ -33,6 +33,10 @@ public sealed partial class OverlayPage : Page
         _loading = true;
         var o = App.Profiles.Overlay;
         EnabledSwitch.IsOn = o.Enabled;
+        var key = App.Controller.HotkeyText(HotkeyAction.ToggleOverlay);
+        OverlayHotkeyHint.Text = App.Profiles.Settings.Hotkey(HotkeyAction.ToggleOverlay).IsEmpty
+            ? "Ein- und ausblenden in Cadence oder im Tray-Menü"
+            : $"Ein- und ausblenden auch im Spiel mit {key}";
         VariantBox.SelectedIndex = (int)o.Variant;
         CornerBox.SelectedIndex = (int)o.Corner;
         VariantHint.Text = VariantHints[(int)o.Variant];

@@ -53,7 +53,7 @@ public sealed partial class StatsPage : Page
         };
     }
 
-    // Kommt auch per Hotkey (Strg + Alt + R) aus dem Spiel – also von einem anderen Thread.
+    // Kommt auch per Hotkey (Tastenkürzel) aus dem Spiel – also von einem anderen Thread.
     private void OnRecordingChanged(object? sender, EventArgs e) =>
         DispatcherQueue.TryEnqueue(() =>
         {
@@ -89,7 +89,7 @@ public sealed partial class StatsPage : Page
         RecordText.Text = r.IsRecording ? $"Stopp  {r.Elapsed:m\\:ss}" : "Aufnehmen";
         if (r.IsRecording)
         {
-            SessionInfo.Text = $"Aufnahme läuft · {App.Controller.Active?.DisplayName} · Strg + Alt + R stoppt auch im Spiel";
+            SessionInfo.Text = $"Aufnahme läuft · {App.Controller.Active?.DisplayName} · {App.Controller.HotkeyText(HotkeyAction.ToggleRecording)} stoppt auch im Spiel";
             if (!_clock.IsEnabled) { _clock.Start(); StartBlink(); }
         }
         else if (_clock.IsEnabled)

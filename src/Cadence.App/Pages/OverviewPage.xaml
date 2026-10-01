@@ -55,7 +55,7 @@
                     <StackPanel VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Ziel-FPS" />
                         <TextBlock Style="{StaticResource CaptionStyle}">
-                            <Run Text="{x:Bind Vm.TargetSummary, Mode=OneWay}" /><Run Text=" pro Bild · im Spiel mit Strg + Alt + ↑ / ↓" />
+                            <Run Text="{x:Bind Vm.TargetSummary, Mode=OneWay}" /><Run Text=" pro Bild" /><Run Text="{x:Bind Vm.HotkeyHint, Mode=OneWay}" />
                         </TextBlock>
                     </StackPanel>
                     <controls:Segmented Grid.Column="1" VerticalAlignment="Center"

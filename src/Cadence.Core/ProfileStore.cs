@@ -19,6 +19,7 @@ public sealed class ProfileStore
         public GameProfile Default { get; set; } = new() { DisplayName = "Alle anderen Spiele", TargetFps = 120 };
         public List<GameProfile> Games { get; set; } = [];
         public OverlaySettings Overlay { get; set; } = new();
+        public AppSettings Settings { get; set; } = new();
     }
 
     private readonly string _path;
@@ -40,6 +41,9 @@ public sealed class ProfileStore
     /// <summary>Overlay-Einstellungen (global). Nach Aenderungen <see cref="Save"/> aufrufen.</summary>
     public OverlaySettings Overlay { get { lock (_lock) return _model.Overlay; } }
 
+    /// <summary>App-Einstellungen (global). Nach Aenderungen <see cref="Save"/> aufrufen.</summary>
+    public AppSettings Settings { get { lock (_lock) return _model.Settings; } }
+
     public void Load()
     {
         lock (_lock)
@@ -48,6 +52,9 @@ public sealed class ProfileStore
             {
                 if (File.Exists(_path))
                     _model = JsonSerializer.Deserialize<FileModel>(File.ReadAllText(_path), JsonOptions) ?? new();
+                _model.Settings ??= new();
+                _model.Overlay ??= new();
+                _model.Settings.Normalize();
                 _model.Default.ApplyRefreshRate();
             }
             catch (JsonException)

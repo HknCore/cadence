@@ -75,7 +75,7 @@ public sealed class SessionController : IDisposable
         _watcher.GameSuggested += (_, e) => GameSuggested?.Invoke(this, e);
         _watcher.GameExited += (_, pid) => OnExited(pid);
 
-        _hotkeys = new HotkeyService();
+        _hotkeys = new HotkeyService(profiles.Settings.Hotkeys);
         _hotkeys.Pressed += (_, a) => OnHotkey(a);
 
         _overlay = new OverlayWindow(GetOverlayFrame);
@@ -87,6 +87,28 @@ public sealed class SessionController : IDisposable
     public GameSession? Active { get; private set; }
 
     public bool HotkeysAvailable => _hotkeys.Registered;
+
+    /// <summary>Kürzel, die ein anderes Programm belegt (nach dem letzten Speichern).</summary>
+    public IReadOnlyCollection<HotkeyAction> HotkeyConflicts => _hotkeys.Failed;
+
+    /// <summary>Lesbarer Text des Kürzels, z. B. "Strg + Alt + R".</summary>
+    public string HotkeyText(HotkeyAction action) => Profiles.Settings.Hotkey(action).ToString();
+
+    /// <summary>Kürzel vorübergehend abschalten, z. B. während in den Einstellungen ein neues aufgenommen wird.</summary>
+    public void SuspendHotkeys() => _hotkeys.Update([]);
+
+    public void ResumeHotkeys() => _hotkeys.Update(Profiles.Settings.Hotkeys);
+
+    /// <summary>Neue Belegung speichern und sofort aktivieren.</summary>
+    public void ApplyHotkeys(IEnumerable<HotkeyBinding> bindings)
+    {
+        var list = bindings.Select(b => b.Clone()).ToList();
+        Profiles.Settings.Hotkeys = list;
+        Profiles.Settings.Normalize();
+        Profiles.Save();
+        _hotkeys.Update(Profiles.Settings.Hotkeys);
+        ActiveChanged?.Invoke(this, EventArgs.Empty);
+    }
 
     public IReadOnlyList<RecordedSession> Recordings { get { lock (_recordings) return _recordings.ToList(); } }
 
@@ -265,7 +287,8 @@ public sealed class SessionController : IDisposable
     {
         if (Active is null || Recorder.IsRecording) return false;
         Recorder.Start();
-        ShowToast("Aufnahme läuft (Strg + Alt + R stoppt)");
+        var key = Profiles.Settings.Hotkey(HotkeyAction.ToggleRecording);
+        ShowToast(key.IsEmpty ? "Aufnahme läuft" : $"Aufnahme läuft ({key} stoppt)");
         RecordingChanged?.Invoke(this, EventArgs.Empty);
         return true;
     }
