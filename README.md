@@ -9,6 +9,10 @@
   <img alt="Status: Early Access" src="https://img.shields.io/badge/Status-Early%20Access-E0A458?style=flat-square&labelColor=1C1C1C">
 </p>
 
+
+https://github.com/user-attachments/assets/6c041650-46fd-47c9-b4f6-9e6d945133ab
+
+
 <p align="center">
   <b><a href="#so-legst-du-los">Loslegen</a></b> ·
   <a href="#funktionen">Funktionen</a> ·
