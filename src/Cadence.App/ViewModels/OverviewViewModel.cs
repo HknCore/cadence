@@ -65,11 +65,17 @@ public sealed class OverviewViewModel : ObservableObject
             if (!SetProperty(ref _targetFps, value)) return;
             OnPropertyChanged(nameof(TargetFrametime));
             SyncPresetIndex();
+            OnPropertyChanged(nameof(TargetSummary));
             if (!_syncing) _c.SetTargetFps(value);
         }
     }
 
     public string TargetFrametime => $"{1000.0 / _targetFps:0.00} ms";
+
+    /// <summary>"Eigener Wert: 200 FPS · 5.00 ms" bzw. "16.67 ms" – zeigt klar, was gerade gilt.</summary>
+    public string TargetSummary => _presetIndex < 0
+        ? $"Eigener Wert: {_targetFps:0} FPS · {TargetFrametime}"
+        : TargetFrametime;
 
     private int _presetIndex = -1;
     public int PresetIndex
@@ -192,7 +198,7 @@ public sealed class OverviewViewModel : ObservableObject
 
         (Status, StatusOk) = link.HookState switch
         {
-            HookState.Active when _c.Enabled => ("Läuft · Limit aktiv", true),
+            HookState.Active when _c.Enabled => ($"Läuft · Limit {_targetFps:0} FPS aktiv", true),
             HookState.Active => ("Läuft · nur Messung", true),
             HookState.Initializing => ("Verbinde …", false),
             HookState.Failed => ($"Fehler: {link.LastError}", false),
