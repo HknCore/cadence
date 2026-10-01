@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>Cadence.App</RootNamespace>
+    <AssemblyName>Cadence</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWinUI>true</UseWinUI>
+    <!-- unpaketierte App: laeuft direkt als .exe, kein MSIX noetig -->
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>Assets\Cadence.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260921001" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.9169" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Cadence.Core\Cadence.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Die Hook-DLL wird von build.ps1 nach build\hook\ gebaut und hier mitkopiert. -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll')">
+    <None Include="$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll"
+          Link="CadenceHook.dll"
+          CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <Target Name="WarnMissingHook" BeforeTargets="Build"
+          Condition="!Exists('$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll')">
+    <Warning Text="CadenceHook.dll fehlt. Zuerst build.ps1 ausführen (baut die Hook-DLL)." />
+  </Target>
+
+</Project>

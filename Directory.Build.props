@@ -1,0 +1,11 @@
+<Project>
+  <!--
+    Gilt fuer alle Projekte im Ordner.
+    Das Windows App SDK 1.8 braucht eine neuere Windows-SDK-Projektion als die,
+    die aeltere .NET-8-SDKs (z. B. 8.0.400) automatisch waehlen. Core und App
+    muessen dieselbe Version nutzen, sonst gibt es Versionskonflikte (MSB3277).
+  -->
+  <PropertyGroup>
+    <WindowsSdkPackageVersion>10.0.19041.56</WindowsSdkPackageVersion>
+  </PropertyGroup>
+</Project>

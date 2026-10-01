@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Cadence.App.Pages.ProfilesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Cadence.App.ViewModels"
+    Background="Transparent">
+
+    <Grid Padding="32,20,32,28" RowSpacing="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition IsStaggeringEnabled="True" FromVerticalOffset="16" />
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+
+        <Grid ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Profile" Style="{StaticResource TitleTextBlockStyle}" VerticalAlignment="Center" />
+            <AutoSuggestBox x:Name="Search" Grid.Column="1" Width="240" PlaceholderText="Suchen"
+                            QueryIcon="Find" TextChanged="Search_TextChanged"
+                            AutomationProperties.Name="Profile durchsuchen" />
+            <Button Grid.Column="2" Content="Profil hinzufügen" Style="{StaticResource AccentButtonStyle}" Click="Add_Click" />
+        </Grid>
+
+        <Grid Grid.Row="1" ColumnSpacing="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="340" />
+            </Grid.ColumnDefinitions>
+
+            <Border Style="{StaticResource CardStyle}" Padding="4">
+                <ListView x:Name="ProfileList" SelectionMode="Single" ItemsSource="{x:Bind Items}"
+                          SelectionChanged="List_SelectionChanged">
+                    <ListView.ItemContainerTransitions>
+                        <TransitionCollection>
+                            <AddDeleteThemeTransition />
+                            <ContentThemeTransition />
+                            <ReorderThemeTransition />
+                        </TransitionCollection>
+                    </ListView.ItemContainerTransitions>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ProfileItem">
+                            <Grid Padding="4,10" ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="{x:Bind Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{x:Bind Subtitle}" Style="{StaticResource CaptionStyle}" />
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Text="{x:Bind Summary, Mode=OneWay}" VerticalAlignment="Center"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Border>
+
+            <!-- Details -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="20">
+                <Grid>
+                    <TextBlock x:Name="EmptyHint" Text="Wähle links ein Profil aus." Style="{StaticResource CaptionStyle}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <StackPanel x:Name="Details" Spacing="16" Visibility="Collapsed">
+                        <StackPanel.ChildrenTransitions>
+                            <TransitionCollection>
+                                <EntranceThemeTransition IsStaggeringEnabled="True" FromHorizontalOffset="12" FromVerticalOffset="0" />
+                            </TransitionCollection>
+                        </StackPanel.ChildrenTransitions>
+
+                        <StackPanel Spacing="2">
+                            <TextBlock x:Name="DetailTitle" Style="{StaticResource SubtitleTextBlockStyle}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock x:Name="DetailSubtitle" Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <TextBox x:Name="NameBox" Header="Anzeigename" LostFocus="NameBox_LostFocus" />
+                        <ToggleSwitch x:Name="RefreshSwitch" Toggled="Switch_Toggled" />
+                        <NumberBox x:Name="FpsBox" Header="Ziel-FPS" Minimum="10" Maximum="1000" SmallChange="1"
+                                   SpinButtonPlacementMode="Inline" ValueChanged="FpsBox_ValueChanged" />
+                        <ComboBox x:Name="ModeBox" Header="Modus" HorizontalAlignment="Stretch" SelectionChanged="ModeBox_SelectionChanged">
+                            <ComboBoxItem Content="Ausgewogen" />
+                            <ComboBoxItem Content="Niedrige Latenz" />
+                            <ComboBoxItem Content="Max. Glätte" />
+                        </ComboBox>
+                        <ToggleSwitch x:Name="AutoSwitch" Header="Automatisch anwenden" Toggled="Switch_Toggled" />
+                        <ToggleSwitch x:Name="OverlaySwitch" Header="Overlay im Spiel" Toggled="Switch_Toggled" />
+                        <ToggleSwitch x:Name="HotkeySwitch" Header="Hotkeys im Spiel (Strg + Alt + ↑ / ↓)" Toggled="Switch_Toggled" />
+
+                        <Button x:Name="DeleteButton" Content="Profil löschen" Click="Delete_Click" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

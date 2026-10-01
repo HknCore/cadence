@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadence.Core", "src\Cadence.Core\Cadence.Core.csproj", "{9580B2E3-A89B-4902-9AE2-F4AA5EEE7330}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadence.App", "src\Cadence.App\Cadence.App.csproj", "{3E02B508-A66A-41AE-BFA3-7425E96DC5D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9580B2E3-A89B-4902-9AE2-F4AA5EEE7330}.Debug|x64.ActiveCfg = Debug|x64
+		{9580B2E3-A89B-4902-9AE2-F4AA5EEE7330}.Debug|x64.Build.0 = Debug|x64
+		{9580B2E3-A89B-4902-9AE2-F4AA5EEE7330}.Release|x64.ActiveCfg = Release|x64
+		{9580B2E3-A89B-4902-9AE2-F4AA5EEE7330}.Release|x64.Build.0 = Release|x64
+		{3E02B508-A66A-41AE-BFA3-7425E96DC5D9}.Debug|x64.ActiveCfg = Debug|x64
+		{3E02B508-A66A-41AE-BFA3-7425E96DC5D9}.Debug|x64.Build.0 = Debug|x64
+		{3E02B508-A66A-41AE-BFA3-7425E96DC5D9}.Release|x64.ActiveCfg = Release|x64
+		{3E02B508-A66A-41AE-BFA3-7425E96DC5D9}.Release|x64.Build.0 = Release|x64
+		{3E02B508-A66A-41AE-BFA3-7425E96DC5D9}.Debug|x64.Deploy.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
