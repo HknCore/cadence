@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Cadence.App.Pages;
 using Cadence.Core;
 using Microsoft.UI.Windowing;
+using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Dispatching;
@@ -50,12 +51,59 @@ public sealed partial class MainWindow : Window
         if (ContentFrame.Content is null) ContentFrame.Navigate(typeof(OverviewPage));
         CompositionTarget.Rendering += (_, _) => App.PumpFrames();
 
-        // Minimieren -> ab in den Infobereich (Tray)
-        AppWindow.Changed += (_, _) =>
+        RestorePlacement();
+
+        AppWindow.Changed += (_, args) =>
         {
-            if (AppWindow.IsVisible && AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Minimized })
+            if (AppWindow.Presenter is not OverlappedPresenter p) return;
+            // Minimieren -> ab in den Infobereich (Tray)
+            if (AppWindow.IsVisible && p.State == OverlappedPresenterState.Minimized)
+            {
                 AppWindow.Hide();
+                return;
+            }
+            // Letzte "normale" Groesse und Position merken (nicht die maximierte).
+            if (!AppWindow.IsVisible) return;
+            if (p.State == OverlappedPresenterState.Restored && (args.DidPositionChange || args.DidSizeChange))
+                _normalBounds = new RectInt32(AppWindow.Position.X, AppWindow.Position.Y, AppWindow.Size.Width, AppWindow.Size.Height);
+            if (args.DidPresenterChange || args.DidSizeChange)
+                _maximized = p.State == OverlappedPresenterState.Maximized;
         };
+    }
+
+    // ------------------------------------------------------------ Fensterposition
+    private RectInt32? _normalBounds;
+    private bool _maximized;
+
+    /// <summary>Groesse und Position vom letzten Mal – nur, wenn sie noch auf einem Bildschirm liegen.</summary>
+    private void RestorePlacement()
+    {
+        var w = App.Profiles.Settings.Window;
+        if (w is null || w.Width < 600 || w.Height < 400) return;
+        var rect = new RectInt32(w.X, w.Y, w.Width, w.Height);
+        // Mindestens die Titelleiste muss sichtbar sein (z. B. nach Abstecken eines zweiten Monitors).
+        var titleArea = new RectInt32(w.X + 40, w.Y, Math.Max(1, w.Width - 80), 40);
+        if (DisplayArea.GetFromRect(titleArea, DisplayAreaFallback.None) is null) return;
+        AppWindow.MoveAndResize(rect);
+        _normalBounds = rect;
+        _maximized = w.Maximized;
+    }
+
+    /// <summary>Nach dem ersten Anzeigen aufrufen: stellt den maximierten Zustand wieder her.</summary>
+    public void ApplySavedMaximize()
+    {
+        if (_maximized && AppWindow.Presenter is OverlappedPresenter p) p.Maximize();
+    }
+
+    /// <summary>Beim Beenden aufrufen.</summary>
+    public void SavePlacement()
+    {
+        if (_normalBounds is not { } b) return;
+        App.Profiles.Settings.Window = new WindowPlacement
+        {
+            X = b.X, Y = b.Y, Width = b.Width, Height = b.Height, Maximized = _maximized,
+        };
+        App.Profiles.Save();
     }
 
     /// <summary>Fenster aus dem Tray zurueckholen.</summary>

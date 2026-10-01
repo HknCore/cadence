@@ -83,6 +83,8 @@ public partial class App : Application
         // Autostart: direkt in den Tray, Profile greifen trotzdem.
         if (minimized && MainWindow.AppWindow.Presenter is Microsoft.UI.Windowing.OverlappedPresenter presenter)
             presenter.Minimize();
+        else
+            MainWindow.ApplySavedMaximize();
     }
 
     private static void ListenForSecondInstance()
@@ -185,6 +187,7 @@ public partial class App : Application
     {
         if (_shuttingDown) return;
         _shuttingDown = true;
+        try { MainWindow?.SavePlacement(); } catch (Exception ex) { CrashReporter.Log("Fensterposition", ex); }
         Tray?.Dispose();
         Controller.Dispose();
         if (exitApp) Current.Exit();
