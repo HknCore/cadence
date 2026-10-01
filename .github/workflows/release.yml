@@ -1,24 +1,28 @@
-# Baut bei jedem Versions-Tag (z. B. v0.2.2) den Installer und veroeffentlicht ihn unter "Releases".
-# Manuell starten geht auch: Actions -> Release -> Run workflow (dann nur als Download-Artefakt).
+# Erstellt automatisch einen Release, sobald auf master eine neue Version landet
+# (Versionsnummer in Directory.Build.props, fuer die es noch keinen Tag gibt).
+# Ein Tag-Push (vX.Y.Z) oder der manuelle Start unter Actions funktioniert weiterhin.
 name: Release
 
 on:
   push:
+    branches: [master, main]
     tags: ["v*"]
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          fetch-depth: 0
 
       - name: Version bestimmen
         id: ver
@@ -30,27 +34,44 @@ jobs:
             $props = Get-Content Directory.Build.props -Raw
             $v = [regex]::Match($props, "<Version>([^<]+)</Version>").Groups[1].Value
           }
+          $tag = "v$v"
+          # Bei einem Push auf master nur bauen, wenn es fuer diese Version noch keinen Tag gibt.
+          $exists = git tag --list $tag
+          $release = ("${{ github.ref_type }}" -eq "tag") -or (-not $exists) -or ("${{ github.event_name }}" -eq "workflow_dispatch")
           "version=$v" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "release=$($release.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          if (-not $release) { Write-Host "Version $v ist bereits veroeffentlicht - kein neuer Release." }
+
+      - uses: actions/setup-dotnet@v4
+        if: steps.ver.outputs.release == 'true'
+        with:
+          dotnet-version: "8.0.x"
 
       - name: Inno Setup installieren
+        if: steps.ver.outputs.release == 'true'
         shell: pwsh
         run: |
           $have = Get-ChildItem "${env:ProgramFiles}\Inno Setup*\ISCC.exe", "${env:ProgramFiles(x86)}\Inno Setup*\ISCC.exe" -ErrorAction SilentlyContinue
           if (-not $have) { choco install innosetup -y --no-progress }
 
       - name: Bauen und Installer erstellen
+        if: steps.ver.outputs.release == 'true'
         shell: pwsh
         run: ./build-installer.ps1 -Version ${{ steps.ver.outputs.version }}
 
       - uses: actions/upload-artifact@v4
+        if: steps.ver.outputs.release == 'true'
         with:
           name: Cadence-Setup-${{ steps.ver.outputs.version }}
           path: build/installer/*.exe
 
       - name: Release veroeffentlichen
-        if: github.ref_type == 'tag'
+        if: steps.ver.outputs.release == 'true' && github.event_name != 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          target_commitish: ${{ github.sha }}
           name: Cadence ${{ steps.ver.outputs.version }}
           files: build/installer/*.exe
           generate_release_notes: true

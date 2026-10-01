@@ -58,12 +58,7 @@ Das Ergebnis liegt unter `build\installer\Cadence-Setup-<Version>.exe`. Die Vers
 
 ### Automatische Releases
 
-Sobald ein Versions-Tag auf GitHub landet, baut GitHub Actions den Installer und hängt ihn an ein neues Release:
-
-```powershell
-git tag v0.2.2
-git push origin v0.2.2
-```
+Sobald auf `master` eine neue Versionsnummer in `Directory.Build.props` landet, baut GitHub Actions den Installer und erstellt den Release samt Tag `vX.Y.Z` selbst. Ein Push ohne neue Version löst keinen Release aus.
 
 ## Testen
 
