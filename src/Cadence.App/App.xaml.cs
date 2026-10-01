@@ -85,6 +85,8 @@ public partial class App : Application
             presenter.Minimize();
         else
             MainWindow.ApplySavedMaximize();
+
+        MainWindow.CheckForUpdatesInBackground();
     }
 
     private static void ListenForSecondInstance()

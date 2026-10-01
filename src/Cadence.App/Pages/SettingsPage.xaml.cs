@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Cadence.App.Services;
 using Cadence.Core;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -38,6 +39,7 @@ public sealed partial class SettingsPage : Page
         using (var key = Registry.CurrentUser.OpenSubKey(RunKey))
             AutostartSwitch.IsOn = key?.GetValue(RunName) is string;
         NotifySwitch.IsOn = App.Profiles.Settings.Notifications;
+        AutoUpdateBox.IsChecked = App.Profiles.Settings.CheckForUpdates;
         _loading = false;
 
         ProfilePath.Text = ProfileDir;
@@ -188,5 +190,26 @@ public sealed partial class SettingsPage : Page
         _capturing = null;
         App.Controller.ApplyHotkeys(HotkeyBinding.Defaults());
         RefreshHotkeyTexts();
+    }
+
+    // ------------------------------------------------------------ Updates
+    private void AutoUpdate_Changed(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        App.Profiles.Settings.CheckForUpdates = AutoUpdateBox.IsChecked == true;
+        App.Profiles.Save();
+    }
+
+    private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        CheckUpdateButton.IsEnabled = false;
+        CheckUpdateButton.Content = "Suche …";
+        var result = await UpdateService.CheckAsync();
+        CheckUpdateButton.IsEnabled = true;
+        CheckUpdateButton.Content = "Nach Updates suchen";
+
+        if (result.Newer is { } info) App.MainWindow.ShowUpdate(info);
+        else if (result.Success) App.MainWindow.ShowInfo("Cadence ist aktuell", $"Version {MainWindow.AppVersion} ist die neueste.");
+        else App.MainWindow.ShowError(result.Error ?? "Update-Prüfung fehlgeschlagen.");
     }
 }

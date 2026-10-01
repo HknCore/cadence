@@ -237,6 +237,71 @@ public sealed partial class MainWindow : Window
         board.Children.Add(anim);
     }
 
+    public void ShowInfo(string title, string message)
+    {
+        InfoBarGeneral.Title = title;
+        InfoBarGeneral.Message = message;
+        InfoBarGeneral.IsOpen = true;
+    }
+
+    // ------------------------------------------------------------ Updates
+    private Services.UpdateInfo? _update;
+
+    public void ShowUpdate(Services.UpdateInfo info)
+    {
+        _update = info;
+        UpdateBar.Message = $"Cadence {info.Version} ist erschienen (du hast {AppVersion}).";
+        UpdateButton.IsEnabled = true;
+        UpdateProgress.Visibility = Visibility.Collapsed;
+        UpdateBar.IsOpen = true;
+    }
+
+    /// <summary>Beim Start einmal leise nach einem Update suchen.</summary>
+    public async void CheckForUpdatesInBackground()
+    {
+        var settings = App.Profiles.Settings;
+        if (!settings.CheckForUpdates) return;
+        await Task.Delay(TimeSpan.FromSeconds(5));
+        var result = await Services.UpdateService.CheckAsync();
+        if (result.Newer is { } info && info.Version.ToString() != settings.SkippedVersion)
+            DispatcherQueue.TryEnqueue(() => ShowUpdate(info));
+    }
+
+    private async void UpdateInstall_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update is null) return;
+        UpdateButton.IsEnabled = false;
+        UpdateProgress.Visibility = Visibility.Visible;
+        UpdateProgress.Value = 0;
+        try
+        {
+            var progress = new Progress<double>(p => UpdateProgress.Value = p * 100);
+            await Services.UpdateService.InstallAsync(_update, progress);
+            if (_update.InstallerUrl is not null) App.Shutdown(exitApp: true); // der Installer uebernimmt
+        }
+        catch (Exception ex)
+        {
+            CrashReporter.Log("Update installieren", ex);
+            UpdateButton.IsEnabled = true;
+            UpdateProgress.Visibility = Visibility.Collapsed;
+            ShowError("Update konnte nicht geladen werden: " + ex.Message);
+        }
+    }
+
+    private void UpdateNotes_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update is not null)
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(_update.PageUrl) { UseShellExecute = true });
+    }
+
+    private void UpdateSkip_Click(object sender, RoutedEventArgs e)
+    {
+        if (_update is null) return;
+        App.Profiles.Settings.SkippedVersion = _update.Version.ToString();
+        App.Profiles.Save();
+        UpdateBar.IsOpen = false;
+    }
+
     public void ShowError(string message)
     {
         ErrorBar.Message = message;

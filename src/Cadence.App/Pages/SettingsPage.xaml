@@ -87,11 +87,24 @@
             </Border>
 
             <Border Style="{StaticResource CardStyle}" Padding="20,14">
-                <StackPanel Spacing="2">
-                    <TextBlock Text="Über Cadence" />
-                    <TextBlock Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"
-                               x:Name="AboutText" Text="Unterstützt 64-Bit-Spiele mit DirectX 10, 11, 12 und OpenGL. Vulkan und 32-Bit-Spiele folgen." />
-                </StackPanel>
+                <Grid ColumnSpacing="16" RowSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Über Cadence" />
+                        <TextBlock Style="{StaticResource CaptionStyle}" TextWrapping="Wrap"
+                                   x:Name="AboutText" Text="Unterstützt 64-Bit-Spiele mit DirectX 10, 11, 12 und OpenGL. Vulkan und 32-Bit-Spiele folgen." />
+                    </StackPanel>
+                    <Button x:Name="CheckUpdateButton" Grid.Column="1" Content="Nach Updates suchen" Click="CheckUpdate_Click" VerticalAlignment="Center" />
+                    <CheckBox x:Name="AutoUpdateBox" Grid.Row="1" Content="Beim Start automatisch nach Updates suchen"
+                              Checked="AutoUpdate_Changed" Unchecked="AutoUpdate_Changed" />
+                </Grid>
             </Border>
         </StackPanel>
     </ScrollViewer>

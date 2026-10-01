@@ -80,6 +80,19 @@
                     </InfoBar>
                     <InfoBar x:Name="BlockedBar" Severity="Warning" IsOpen="False" Title="Anti-Cheat erkannt" />
                     <InfoBar x:Name="ErrorBar" Severity="Error" IsOpen="False" Title="Fehler" />
+                    <InfoBar x:Name="InfoBarGeneral" Severity="Success" IsOpen="False" />
+                    <InfoBar x:Name="UpdateBar" Severity="Informational" IsOpen="False" Title="Update verfügbar">
+                        <InfoBar.ActionButton>
+                            <Button x:Name="UpdateButton" Content="Jetzt installieren" Style="{StaticResource AccentButtonStyle}" Click="UpdateInstall_Click" />
+                        </InfoBar.ActionButton>
+                        <InfoBar.Content>
+                            <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,0,0,12">
+                                <HyperlinkButton x:Name="UpdateNotesLink" Content="Was ist neu?" Click="UpdateNotes_Click" Padding="0" />
+                                <HyperlinkButton Content="Diese Version überspringen" Click="UpdateSkip_Click" Padding="0" />
+                                <ProgressBar x:Name="UpdateProgress" Width="160" Visibility="Collapsed" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </InfoBar.Content>
+                    </InfoBar>
                 </StackPanel>
 
                 <Frame x:Name="ContentFrame" Grid.Row="1">
