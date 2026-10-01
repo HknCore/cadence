@@ -30,6 +30,21 @@
                 </Grid>
             </Border>
 
+            <Border Style="{StaticResource CardStyle}" Padding="20,14">
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center" Spacing="2">
+                        <TextBlock Text="Benachrichtigungen" />
+                        <TextBlock Text="Meldet im Hintergrund, wenn ein Spiel begrenzt, erkannt oder wegen Anti-Cheat übersprungen wird." Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ToggleSwitch x:Name="NotifySwitch" Grid.Column="1" OnContent="" OffContent="" MinWidth="0"
+                                  AutomationProperties.Name="Benachrichtigungen" Toggled="Notify_Toggled" />
+                </Grid>
+            </Border>
+
             <!-- Tastenkürzel -->
             <Border Style="{StaticResource CardStyle}" Padding="20,14">
                 <StackPanel Spacing="10">

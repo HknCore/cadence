@@ -25,7 +25,9 @@ public sealed unsafe class TrayIcon : IDisposable
     private const uint WM_RBUTTONUP = 0x0205;
     private const uint WM_NULL = 0x0000;
     private const uint NIM_ADD = 0, NIM_MODIFY = 1, NIM_DELETE = 2;
-    private const uint NIF_MESSAGE = 0x1, NIF_ICON = 0x2, NIF_TIP = 0x4;
+    private const uint NIF_MESSAGE = 0x1, NIF_ICON = 0x2, NIF_TIP = 0x4, NIF_INFO = 0x10;
+    private const uint NIIF_USER = 0x4, NIIF_LARGE_ICON = 0x20;
+    private const uint NIN_BALLOONUSERCLICK = 0x0405;
     private const uint MF_STRING = 0x0, MF_GRAYED = 0x1, MF_CHECKED = 0x8, MF_POPUP = 0x10, MF_SEPARATOR = 0x800;
     private const uint TPM_RIGHTBUTTON = 0x2, TPM_BOTTOMALIGN = 0x20, TPM_RETURNCMD = 0x100, TPM_NONOTIFY = 0x80;
     private const uint IMAGE_ICON = 1, LR_LOADFROMFILE = 0x10;
@@ -132,7 +134,7 @@ public sealed unsafe class TrayIcon : IDisposable
                 if (msg == WM_TRAY)
                 {
                     var mouse = (uint)(lParam.ToInt64() & 0xFFFF);
-                    if (mouse == WM_LBUTTONUP) self.Activated?.Invoke(self, EventArgs.Empty);
+                    if (mouse is WM_LBUTTONUP or NIN_BALLOONUSERCLICK) self.Activated?.Invoke(self, EventArgs.Empty);
                     else if (mouse == WM_RBUTTONUP) self.ShowMenu();
                     return IntPtr.Zero;
                 }
@@ -216,6 +218,29 @@ public sealed unsafe class TrayIcon : IDisposable
         if (_hwnd == IntPtr.Zero) return;
         var d = NewData();
         Shell_NotifyIconW(NIM_MODIFY, ref d);
+    }
+
+    /// <summary>
+    /// Windows-Benachrichtigung ueber das Tray-Symbol (erscheint unter Windows 10/11 als Toast).
+    /// Ein Klick darauf loest <see cref="Activated"/> aus.
+    /// </summary>
+    public void ShowNotification(string title, string text)
+    {
+        if (_hwnd == IntPtr.Zero) return;
+        var d = NewData();
+        d.uFlags = NIF_INFO;
+        d.dwInfoFlags = NIIF_USER | NIIF_LARGE_ICON;
+        d.hBalloonIcon = _icon;
+        Copy(title, d.szInfoTitle, 63);
+        Copy(text, d.szInfo, 255);
+        Shell_NotifyIconW(NIM_MODIFY, ref d);
+    }
+
+    private static void Copy(string s, char* dst, int max)
+    {
+        var n = Math.Min(s.Length, max);
+        for (var i = 0; i < n; i++) dst[i] = s[i];
+        dst[n] = '\0';
     }
 
     private void ShowMenu()

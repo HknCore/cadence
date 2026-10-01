@@ -106,6 +106,12 @@ public sealed partial class MainWindow : Window
         App.Profiles.Save();
     }
 
+    /// <summary>true, wenn der Benutzer Cadence gerade vor sich hat – dann braucht es keine Benachrichtigung.</summary>
+    public bool IsInForeground =>
+        AppWindow.IsVisible &&
+        AppWindow.Presenter is OverlappedPresenter { State: not OverlappedPresenterState.Minimized } &&
+        NativeMethods.GetForegroundWindow() == WinRT.Interop.WindowNative.GetWindowHandle(this);
+
     /// <summary>Fenster aus dem Tray zurueckholen.</summary>
     public void RestoreFromTray()
     {

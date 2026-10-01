@@ -37,6 +37,7 @@ public sealed partial class SettingsPage : Page
         _loading = true;
         using (var key = Registry.CurrentUser.OpenSubKey(RunKey))
             AutostartSwitch.IsOn = key?.GetValue(RunName) is string;
+        NotifySwitch.IsOn = App.Profiles.Settings.Notifications;
         _loading = false;
 
         ProfilePath.Text = ProfileDir;
@@ -56,6 +57,13 @@ public sealed partial class SettingsPage : Page
             key.SetValue(RunName, $"\"{Environment.ProcessPath}\" --minimized");
         else
             key.DeleteValue(RunName, throwOnMissingValue: false);
+    }
+
+    private void Notify_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        App.Profiles.Settings.Notifications = NotifySwitch.IsOn;
+        App.Profiles.Save();
     }
 
     private void OpenFolder_Click(object sender, RoutedEventArgs e)

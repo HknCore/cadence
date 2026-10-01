@@ -118,6 +118,27 @@ public partial class App : Application
         Controller.SessionStarted += (_, _) => UpdateTrayTooltip();
         Controller.SessionEnded += (_, _) => UpdateTrayTooltip();
         UpdateTrayTooltip();
+
+        Controller.SessionStarted += (_, s) =>
+            Notify("Limit aktiv", $"{s.DisplayName} · {s.Profile.TargetFps:0} FPS");
+        Controller.SessionBlocked += (_, e) =>
+            Notify("Anti-Cheat erkannt", $"{e.Game.ExeName}: Cadence bleibt draussen.");
+        Controller.GameSuggested += (_, e) =>
+            Notify("Neues Spiel erkannt", $"{e.ExeName} läuft im Vollbild. Öffne Cadence, um es zu begrenzen.");
+    }
+
+    /// <summary>
+    /// Windows-Benachrichtigung, aber nur wenn Cadence nicht ohnehin im Vordergrund ist.
+    /// Events kommen von Hintergrund-Threads, daher erst auf den UI-Thread.
+    /// </summary>
+    private static void Notify(string title, string text)
+    {
+        if (_shuttingDown || !Profiles.Settings.Notifications) return;
+        MainWindow.DispatcherQueue.TryEnqueue(() =>
+        {
+            if (_shuttingDown || MainWindow.IsInForeground) return;
+            Tray?.ShowNotification(title, text);
+        });
     }
 
     private static void UpdateTrayTooltip()
