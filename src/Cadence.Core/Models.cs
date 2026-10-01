@@ -30,6 +30,8 @@ public sealed class GameProfile
     /// <summary>Dateiname der Spiel-EXE, z. B. "Cyberpunk2077.exe" (Gross-/Kleinschreibung egal).</summary>
     public string ExeName { get; set; } = "";
     public string DisplayName { get; set; } = "";
+    /// <summary>Voller Pfad der EXE (fuer das Spiel-Icon), sobald bekannt.</summary>
+    public string? ExePath { get; set; }
     public double TargetFps { get; set; } = 60;
     public LimiterMode Mode { get; set; } = LimiterMode.Balanced;
     public bool AutoApply { get; set; } = true;

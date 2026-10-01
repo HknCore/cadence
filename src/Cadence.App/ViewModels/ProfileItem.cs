@@ -1,4 +1,6 @@
 using Cadence.Core;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace Cadence.App.ViewModels;
 
@@ -14,12 +16,47 @@ public sealed class ProfileItem : ObservableObject
 
     public string Title => Model.IsDefault ? "Alle anderen Spiele" : Model.DisplayName;
     public string Subtitle => Model.IsDefault ? "Standard, wenn ein Spiel kein eigenes Profil hat" : Model.ExeName;
+    /// <summary>Programm-Icon aus der EXE; wird nachgeladen, bis dahin stehen die Initialen.</summary>
+    public ImageSource? Icon
+    {
+        get => _icon;
+        set
+        {
+            if (ReferenceEquals(_icon, value)) return;
+            _icon = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(InitialsVisibility));
+        }
+    }
+    private ImageSource? _icon;
+
+    public string Initials
+    {
+        get
+        {
+            if (Model.IsDefault) return "";
+            var words = (Model.DisplayName.Length > 0 ? Model.DisplayName : Path.GetFileNameWithoutExtension(Model.ExeName))
+                .Split([' ', '-', '_', ':', '.'], StringSplitOptions.RemoveEmptyEntries)
+                .Where(w => char.IsLetterOrDigit(w[0]))
+                .ToArray();
+            return words.Length switch
+            {
+                0 => "?",
+                1 => words[0][..Math.Min(2, words[0].Length)].ToUpperInvariant(),
+                _ => $"{char.ToUpperInvariant(words[0][0])}{char.ToUpperInvariant(words[1][0])}",
+            };
+        }
+    }
+
+    public Visibility InitialsVisibility => _icon is null && !IsDefault ? Visibility.Visible : Visibility.Collapsed;
+    public Visibility DefaultGlyphVisibility => IsDefault ? Visibility.Visible : Visibility.Collapsed;
+
     public string Summary => $"{Model.TargetFps:0} FPS{(Model.FollowsRefreshRate ? " (Monitor)" : "")} · {ModeName(Model.Mode)}";
 
     public string DisplayName
     {
         get => Model.DisplayName;
-        set { if (Model.DisplayName == value || IsDefault) return; Model.DisplayName = value; Changed(nameof(Title)); }
+        set { if (Model.DisplayName == value || IsDefault) return; Model.DisplayName = value; OnPropertyChanged(nameof(Initials)); Changed(nameof(Title)); }
     }
 
     public double TargetFps

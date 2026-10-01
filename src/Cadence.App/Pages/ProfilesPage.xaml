@@ -50,14 +50,25 @@
                         <DataTemplate x:DataType="vm:ProfileItem">
                             <Grid Padding="4,10" ColumnSpacing="12">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel>
+                                <Grid Width="36" Height="36" CornerRadius="8" VerticalAlignment="Center"
+                                      Background="{ThemeResource ControlFillColorSecondaryBrush}"
+                                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1">
+                                    <TextBlock Text="{x:Bind Initials, Mode=OneWay}" Visibility="{x:Bind InitialsVisibility, Mode=OneWay}"
+                                               FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                               Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                    <FontIcon Glyph="&#xE7FC;" FontSize="16" Visibility="{x:Bind DefaultGlyphVisibility}"
+                                              Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}" />
+                                    <Image Source="{x:Bind Icon, Mode=OneWay}" Width="24" Height="24" Stretch="Uniform" />
+                                </Grid>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                     <TextBlock Text="{x:Bind Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
                                     <TextBlock Text="{x:Bind Subtitle}" Style="{StaticResource CaptionStyle}" />
                                 </StackPanel>
-                                <TextBlock Grid.Column="1" Text="{x:Bind Summary, Mode=OneWay}" VerticalAlignment="Center"
+                                <TextBlock Grid.Column="2" Text="{x:Bind Summary, Mode=OneWay}" VerticalAlignment="Center"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                             </Grid>
                         </DataTemplate>
@@ -93,7 +104,7 @@
                         </ComboBox>
                         <ToggleSwitch x:Name="AutoSwitch" Header="Automatisch anwenden" Toggled="Switch_Toggled" />
                         <ToggleSwitch x:Name="OverlaySwitch" Header="Overlay im Spiel" Toggled="Switch_Toggled" />
-                        <ToggleSwitch x:Name="HotkeySwitch" Header="Hotkeys im Spiel (Strg + Alt + ↑ / ↓)" Toggled="Switch_Toggled" />
+                        <ToggleSwitch x:Name="HotkeySwitch" Header="Tastenkürzel im Spiel" Toggled="Switch_Toggled" />
 
                         <Button x:Name="DeleteButton" Content="Profil löschen" Click="Delete_Click" />
                     </StackPanel>

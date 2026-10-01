@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Cadence.App.Services;
 using Cadence.App.ViewModels;
 using Cadence.Core;
 using Microsoft.UI.Xaml;
@@ -28,11 +29,43 @@ public sealed partial class ProfilesPage : Page
         foreach (var g in App.Profiles.Games.OrderByDescending(g => g.LastPlayed ?? DateTimeOffset.MinValue))
             _all.Add(new ProfileItem(g));
         ApplyFilter();
+        LoadIcons();
 
         var target = selectExe is null
             ? Items.FirstOrDefault()
             : Items.FirstOrDefault(i => string.Equals(i.Model.ExeName, selectExe, StringComparison.OrdinalIgnoreCase));
         ProfileList.SelectedItem = target;
+    }
+
+    /// <summary>
+    /// Icons aus den EXE-Dateien nachladen. Profile von frueher kennen ihren Pfad noch nicht –
+    /// laeuft das Spiel gerade, wird er nachgetragen.
+    /// </summary>
+    private async void LoadIcons()
+    {
+        var learned = false;
+        foreach (var item in _all.Where(i => !i.IsDefault && string.IsNullOrEmpty(i.Model.ExePath)))
+        {
+            var name = Path.GetFileNameWithoutExtension(item.Model.ExeName);
+            foreach (var proc in Process.GetProcessesByName(name))
+            {
+                using (proc)
+                {
+                    if (item.Model.ExePath is null && SessionController.TryGetExePath(proc) is { } path)
+                    {
+                        item.Model.ExePath = path;
+                        learned = true;
+                    }
+                }
+            }
+        }
+        if (learned) App.Profiles.Save();
+
+        foreach (var item in _all.ToList())
+        {
+            if (item.IsDefault || item.Icon is not null) continue;
+            item.Icon = await IconCache.GetAsync(item.Model.ExePath);
+        }
     }
 
     private void ApplyFilter()
@@ -167,9 +200,11 @@ public sealed partial class ProfilesPage : Page
         {
             ExeName = exe,
             DisplayName = proc.MainWindowTitle,
+            ExePath = SessionController.TryGetExePath(proc),
             TargetFps = App.Profiles.Default.TargetFps,
             Mode = App.Profiles.Default.Mode,
         };
+        profile.ExePath ??= SessionController.TryGetExePath(proc);
         App.Profiles.Upsert(profile);
 
         // Blockiert/Fehler meldet das Hauptfenster selbst ueber die Controller-Events.

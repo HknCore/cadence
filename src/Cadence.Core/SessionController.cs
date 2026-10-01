@@ -162,6 +162,7 @@ public sealed class SessionController : IDisposable
             if (profile is not null)
             {
                 profile.LastPlayed = DateTimeOffset.Now;
+                profile.ExePath ??= TryGetExePath(process);
                 Profiles.Upsert(profile);
             }
 
@@ -232,6 +233,8 @@ public sealed class SessionController : IDisposable
         var p = s.Profile.Clone();
         p.ExeName = s.ExeName;
         p.DisplayName = s.Process.MainWindowTitle is { Length: > 0 } t ? t : s.Process.ProcessName;
+        p.ExePath = TryGetExePath(s.Process);
+        p.MatchRefreshRate = null;
         p.LastPlayed = DateTimeOffset.Now;
         s.Profile = p;
         Profiles.Upsert(p);
@@ -394,6 +397,13 @@ public sealed class SessionController : IDisposable
         s.Link.Dispose();
         s.Process.Dispose();
         SessionEnded?.Invoke(this, pid);
+    }
+
+    /// <summary>Voller Pfad der EXE; null, wenn der Prozess ihn nicht preisgibt.</summary>
+    public static string? TryGetExePath(Process process)
+    {
+        try { return process.MainModule?.FileName; }
+        catch { return null; }
     }
 
     /// <summary>
