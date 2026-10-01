@@ -30,6 +30,8 @@ public partial class App : Application
 
     public App()
     {
+        CrashReporter.Install();
+
         // Laeuft Cadence schon (z. B. im Tray), das vorhandene Fenster zeigen und beenden.
         _instanceMutex = new Mutex(true, MutexName, out var isFirst);
         if (!isFirst)
@@ -42,14 +44,27 @@ public partial class App : Application
         InitializeComponent();
         UnhandledException += (_, e) =>
         {
-            // Fehler nicht stillschweigend schlucken, aber die App nicht hart abstuerzen lassen.
-            System.Diagnostics.Debug.WriteLine(e.Exception);
+            CrashReporter.Log("UI-Fehler", e.Exception);
+            if (MainWindow is null) return; // beim Start: OnLaunched meldet den Fehler selbst
+            // Im laufenden Betrieb nicht abstuerzen, sondern den Fehler anzeigen.
             e.Handled = true;
-            MainWindow?.ShowError(e.Exception.Message);
+            MainWindow.ShowError(e.Exception.Message);
         };
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        try
+        {
+            Launch();
+        }
+        catch (Exception ex)
+        {
+            CrashReporter.FailStartup(ex);
+        }
+    }
+
+    private void Launch()
     {
         ApplyAccent();
         Profiles.Load();

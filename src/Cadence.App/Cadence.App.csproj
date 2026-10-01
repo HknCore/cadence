@@ -13,6 +13,9 @@
     <UseWinUI>true</UseWinUI>
     <!-- unpaketierte App: laeuft direkt als .exe, kein MSIX noetig -->
     <WindowsPackageType>None</WindowsPackageType>
+    <!-- Auch ohne MSIX noetig: erzeugt resources.pri (XAML-Ressourcen). Ohne sie stuerzt die
+         veroeffentlichte App beim Start kommentarlos ab (WindowsAppSDK #3718). -->
+    <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

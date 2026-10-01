@@ -45,6 +45,20 @@ dotnet publish (Join-Path $root "src\Cadence.App\Cadence.App.csproj") `
 if ($LASTEXITCODE) { throw "dotnet publish fehlgeschlagen" }
 if (-not (Test-Path (Join-Path $publish "CadenceHook.dll"))) { throw "CadenceHook.dll fehlt im Publish-Ordner" }
 
+# Sicherheitsnetz: ohne .pri-Datei startet die App nicht (bekannter Fehler im Windows App SDK).
+if (-not (Get-ChildItem $publish -Filter *.pri)) {
+    $built = Get-ChildItem (Join-Path $root "src\Cadence.App\bin") -Recurse -Filter *.pri -ErrorAction SilentlyContinue |
+        Where-Object { $_.FullName -match "\\Release\\" } | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+    if (-not $built) { throw "Keine .pri-Datei gefunden - die App wuerde nicht starten." }
+    Copy-Item $built.FullName $publish
+    Write-Host "  $($built.Name) nachtraeglich in den Publish-Ordner kopiert"
+}
+# Die Laufzeit sucht nach resources.pri oder <Exe-Name>.pri - beide Namen bereitstellen.
+$pri = Get-ChildItem $publish -Filter *.pri | Select-Object -First 1
+foreach ($name in "resources.pri", "Cadence.pri") {
+    if (-not (Test-Path (Join-Path $publish $name))) { Copy-Item $pri.FullName (Join-Path $publish $name) }
+}
+
 # ---- 3. Installer -------------------------------------------------------------
 Write-Host "== Installer ==" -ForegroundColor Magenta
 $iscc = Get-ChildItem "${env:ProgramFiles}\Inno Setup*\ISCC.exe", "${env:ProgramFiles(x86)}\Inno Setup*\ISCC.exe", "$env:LOCALAPPDATA\Programs\Inno Setup*\ISCC.exe" -ErrorAction SilentlyContinue |
