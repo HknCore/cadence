@@ -18,6 +18,8 @@
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <Nullable>enable</Nullable>
+    <!-- noetig fuer [LibraryImport] (Windows-Funktionsaufrufe, z. B. im CrashReporter) -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>Assets\Cadence.ico</ApplicationIcon>
   </PropertyGroup>
