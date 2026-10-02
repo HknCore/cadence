@@ -260,7 +260,7 @@ public sealed partial class MainWindow : Window
     public async void CheckForUpdatesInBackground()
     {
         var settings = App.Profiles.Settings;
-        if (!settings.CheckForUpdates) return;
+        if (AppEnvironment.IsPackaged || !settings.CheckForUpdates) return; // Store-Version: Updates kommen vom Store
         await Task.Delay(TimeSpan.FromSeconds(5));
         var result = await Services.UpdateService.CheckAsync();
         if (result.Newer is { } info && info.Version.ToString() != settings.SkippedVersion)

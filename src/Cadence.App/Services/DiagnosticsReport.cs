@@ -16,7 +16,7 @@ public static class DiagnosticsReport
         var c = App.Controller;
         var sb = new StringBuilder();
         sb.AppendLine("### System");
-        sb.AppendLine($"- Cadence: {MainWindow.AppVersion}");
+        sb.AppendLine($"- Cadence: {MainWindow.AppVersion} ({(AppEnvironment.IsPackaged ? "Microsoft Store" : "Setup von GitHub")})");
         sb.AppendLine($"- Windows: {RuntimeInformation.OSDescription} ({RuntimeInformation.OSArchitecture})");
         sb.AppendLine($"- .NET: {RuntimeInformation.FrameworkDescription}");
         sb.AppendLine($"- Monitor: {DisplayInfo.PrimaryRefreshRate()} Hz");

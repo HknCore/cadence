@@ -38,6 +38,13 @@ public sealed partial class SettingsPage : Page
 
         ProfilePath.Text = ProfileDir;
         AboutText.Text = $"Version {MainWindow.AppVersion} · " + AboutText.Text;
+        if (AppEnvironment.IsPackaged)
+        {
+            // Updates kommen in der Store-Version automatisch über den Microsoft Store.
+            AboutText.Text = $"Version {MainWindow.AppVersion} aus dem Microsoft Store · Updates kommen automatisch.";
+            CheckUpdateButton.Visibility = Visibility.Collapsed;
+            AutoUpdateBox.Visibility = Visibility.Collapsed;
+        }
         BuildHotkeyRows();
 
         LoadAutostart();
