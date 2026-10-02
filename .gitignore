@@ -6,3 +6,5 @@ build/hook-cmake/
 src/Cadence.Hook/build/
 build/publish/
 build/installer/
+build/store/
+src/Cadence.App/Package.Store.appxmanifest

@@ -39,11 +39,19 @@
   </ItemGroup>
 
   <!-- Die Hook-DLL wird von build.ps1 nach build\hook\ gebaut und hier mitkopiert. -->
-  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll')">
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll') And '$(WindowsPackageType)' != 'MSIX'">
     <None Include="$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll"
           Link="CadenceHook.dll"
           CopyToOutputDirectory="PreserveNewest"
           CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Microsoft-Store-Version: build-store.ps1 baut mit WindowsPackageType=MSIX.
+       Das Manifest erzeugt das Skript aus Package.Store.appxmanifest.template. -->
+  <ItemGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
+    <AppxManifest Include="Package.Store.appxmanifest" />
+    <Content Include="$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll" Link="CadenceHook.dll"
+             Condition="Exists('$(MSBuildThisFileDirectory)..\..\build\hook\CadenceHook.dll')" />
   </ItemGroup>
 
   <Target Name="WarnMissingHook" BeforeTargets="Build"
