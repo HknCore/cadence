@@ -85,7 +85,7 @@ public partial class App : Application
         MainWindow = new MainWindow();
         MainWindow.Closed += (_, _) => Shutdown(exitApp: false);
 
-        var minimized = Environment.GetCommandLineArgs().Contains("--minimized");
+        var minimized = Services.Autostart.LaunchedAtStartup();
         ListenForSecondInstance();
         CreateTray();
         MainWindow.RunSplash(skip: minimized);

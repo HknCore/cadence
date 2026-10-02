@@ -5,7 +5,6 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.Win32;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -13,8 +12,6 @@ namespace Cadence.App.Pages;
 
 public sealed partial class SettingsPage : Page
 {
-    private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    private const string RunName = "Cadence";
     private static string ProfileDir => AppEnvironment.DataDirectory;
 
     private static readonly (HotkeyAction Action, string Label)[] HotkeyLabels =
@@ -35,8 +32,6 @@ public sealed partial class SettingsPage : Page
     {
         InitializeComponent();
         _loading = true;
-        using (var key = Registry.CurrentUser.OpenSubKey(RunKey))
-            AutostartSwitch.IsOn = key?.GetValue(RunName) is string;
         NotifySwitch.IsOn = App.Profiles.Settings.Notifications;
         AutoUpdateBox.IsChecked = App.Profiles.Settings.CheckForUpdates;
         _loading = false;
@@ -45,19 +40,38 @@ public sealed partial class SettingsPage : Page
         AboutText.Text = $"Version {MainWindow.AppVersion} · " + AboutText.Text;
         BuildHotkeyRows();
 
+        LoadAutostart();
         PreviewKeyDown += OnPreviewKeyDown;
         Unloaded += (_, _) => StopCapture(save: false);
     }
 
     // ------------------------------------------------------------ Allgemein
-    private void Autostart_Toggled(object sender, RoutedEventArgs e)
+    private const string AutostartDefaultHint = "Cadence startet minimiert und wendet Profile automatisch an.";
+
+    private async void LoadAutostart()
+    {
+        try { ShowAutostart(await Autostart.GetAsync()); }
+        catch (Exception ex) { CrashReporter.Log("Autostart lesen", ex); }
+    }
+
+    private void ShowAutostart(Autostart.State state)
+    {
+        _loading = true;
+        AutostartSwitch.IsOn = state.Enabled;
+        AutostartSwitch.IsEnabled = !state.Locked;
+        AutostartHint.Text = state.Hint ?? AutostartDefaultHint;
+        _loading = false;
+    }
+
+    private async void Autostart_Toggled(object sender, RoutedEventArgs e)
     {
         if (_loading) return;
-        using var key = Registry.CurrentUser.CreateSubKey(RunKey);
-        if (AutostartSwitch.IsOn)
-            key.SetValue(RunName, $"\"{Environment.ProcessPath}\" --minimized");
-        else
-            key.DeleteValue(RunName, throwOnMissingValue: false);
+        try { ShowAutostart(await Autostart.SetAsync(AutostartSwitch.IsOn)); }
+        catch (Exception ex)
+        {
+            CrashReporter.Log("Autostart setzen", ex);
+            App.MainWindow.ShowError("Autostart konnte nicht geändert werden: " + ex.Message);
+        }
     }
 
     private void Notify_Toggled(object sender, RoutedEventArgs e)

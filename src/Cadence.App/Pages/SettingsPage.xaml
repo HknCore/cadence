@@ -23,7 +23,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel VerticalAlignment="Center" Spacing="2">
                         <TextBlock Text="Mit Windows starten" />
-                        <TextBlock Text="Cadence startet minimiert und wendet Profile automatisch an." Style="{StaticResource CaptionStyle}" />
+                        <TextBlock x:Name="AutostartHint" Text="Cadence startet minimiert und wendet Profile automatisch an." Style="{StaticResource CaptionStyle}" TextWrapping="Wrap" />
                     </StackPanel>
                     <ToggleSwitch x:Name="AutostartSwitch" Grid.Column="1" OnContent="" OffContent="" MinWidth="0"
                                   AutomationProperties.Name="Mit Windows starten" Toggled="Autostart_Toggled" />
