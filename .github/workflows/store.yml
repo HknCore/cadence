@@ -45,7 +45,16 @@ jobs:
           if ($env:STORE_IDENTITY_NAME) { $params.IdentityName = $env:STORE_IDENTITY_NAME }
           if ($env:STORE_PUBLISHER) { $params.Publisher = $env:STORE_PUBLISHER }
           if ($env:STORE_PUBLISHER_NAME) { $params.PublisherName = $env:STORE_PUBLISHER_NAME }
-          ./build-store.ps1 @params
+          ./build-store.ps1 @params *>&1 | Tee-Object -FilePath build-store.log
+
+      - name: Fehler anzeigen
+        if: failure()
+        shell: pwsh
+        run: |
+          if (Test-Path build-store.log) {
+            Get-Content build-store.log | Where-Object { $_ -match "error|Fehler|fehlgeschlagen|Exception" } |
+              Select-Object -Unique -First 15 | ForEach-Object { Write-Output "::error::$($_.Trim())" }
+          }
 
       - uses: actions/upload-artifact@v4
         with:
