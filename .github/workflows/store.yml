@@ -1,0 +1,55 @@
+# Baut das Paket fuer den Microsoft Store (.msixupload) und legt es als Artefakt ab.
+# Hochladen ins Partner Center geschieht von Hand.
+# Die Werte aus dem Partner Center (Produktidentitaet) als Repository-Variablen hinterlegen:
+#   STORE_IDENTITY_NAME, STORE_PUBLISHER, STORE_PUBLISHER_NAME
+# Ohne Variablen entsteht ein Testpaket mit Platzhaltern.
+name: Store
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - "Directory.Build.props"
+      - "build-store.ps1"
+      - "src/Cadence.App/Package.Store.appxmanifest.template"
+      - "src/Cadence.App/Cadence.App.csproj"
+      - ".github/workflows/store.yml"
+  workflow_dispatch:
+
+jobs:
+  store:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Hook-DLL bauen
+        shell: pwsh
+        run: |
+          cmake -S src/Cadence.Hook -B build/hook-cmake -A x64
+          cmake --build build/hook-cmake --config Release
+          New-Item -ItemType Directory -Force build/hook | Out-Null
+          Copy-Item build/hook-cmake/Release/CadenceHook.dll build/hook/
+
+      - name: Store-Paket bauen
+        shell: pwsh
+        env:
+          STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+          STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+          STORE_PUBLISHER_NAME: ${{ vars.STORE_PUBLISHER_NAME }}
+        run: |
+          $params = @{}
+          if ($env:STORE_IDENTITY_NAME) { $params.IdentityName = $env:STORE_IDENTITY_NAME }
+          if ($env:STORE_PUBLISHER) { $params.Publisher = $env:STORE_PUBLISHER }
+          if ($env:STORE_PUBLISHER_NAME) { $params.PublisherName = $env:STORE_PUBLISHER_NAME }
+          ./build-store.ps1 @params
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Cadence-Store
+          path: |
+            build/store/**/*.msixupload
+            build/store/**/*.msix
