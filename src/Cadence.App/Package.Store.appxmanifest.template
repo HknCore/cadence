@@ -38,7 +38,7 @@
       </uap:VisualElements>
       <Extensions>
         <!-- "Mit Windows starten" (siehe Services/Autostart.cs) -->
-        <desktop:Extension Category="windows.startupTask" Executable="$targetnametoken$.exe" EntryPoint="Windows.FullTrustApplication">
+        <desktop:Extension Category="windows.startupTask" Executable="Cadence.exe" EntryPoint="Windows.FullTrustApplication">
           <desktop:StartupTask TaskId="CadenceStartup" Enabled="false" DisplayName="Cadence" />
         </desktop:Extension>
       </Extensions>
