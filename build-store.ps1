@@ -1,4 +1,4 @@
-# build-store.ps1 – baut das Paket fuer den Microsoft Store (.msixupload)
+# build-store.ps1 – baut das Paket fuer den Microsoft Store (unsigniertes .msix, signiert wird vom Store)
 #
 #   .\build-store.ps1 -IdentityName "12345Hakan.Cadence" -Publisher "CN=XXXXXXXX-..." -PublisherName "Hakan"
 #
@@ -44,14 +44,15 @@ dotnet publish (Join-Path $app "Cadence.App.csproj") `
     -c Release -r win-x64 -p:Platform=x64 -p:Version=$Version `
     -p:WindowsPackageType=MSIX `
     -p:GenerateAppxPackageOnBuild=true `
-    -p:UapAppxPackageBuildMode=StoreUpload `
+    -p:UapAppxPackageBuildMode=SideloadOnly `
+    -p:AppxSymbolPackageEnabled=false `
     -p:AppxBundle=Never `
     -p:AppxPackageSigningEnabled=false `
     -p:AppxPackageDir="$out\"
 if ($LASTEXITCODE) { throw "Store-Paket konnte nicht gebaut werden" }
 
-$upload = Get-ChildItem $out -Recurse -Include *.msixupload, *.msix | Sort-Object Length -Descending | Select-Object -First 1
-if (-not $upload) { throw "Kein .msixupload gefunden in $out" }
+$upload = Get-ChildItem $out -Recurse -Include *.msix | Sort-Object Length -Descending | Select-Object -First 1
+if (-not $upload) { throw "Kein .msix gefunden in $out" }
 Write-Host ""
 Write-Host "Fertig: $($upload.FullName)" -ForegroundColor Green
 Write-Host "Im Partner Center unter 'Pakete' hochladen."

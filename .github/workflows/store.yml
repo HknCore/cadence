@@ -1,4 +1,4 @@
-# Baut das Paket fuer den Microsoft Store (.msixupload) und legt es als Artefakt ab.
+# Baut das Paket fuer den Microsoft Store (.msix) und legt es als Artefakt ab.
 # Hochladen ins Partner Center geschieht von Hand.
 # Die Werte aus dem Partner Center (Produktidentitaet) als Repository-Variablen hinterlegen:
 #   STORE_IDENTITY_NAME, STORE_PUBLISHER, STORE_PUBLISHER_NAME
