@@ -15,7 +15,7 @@ public static class Injector
     public const string HookDllName = "CadenceHook.dll";
 
     public static string DefaultDllPath =>
-        Path.Combine(AppContext.BaseDirectory, HookDllName);
+        AppEnvironment.HookDllPath(typeof(Injector).Assembly.GetName().Version?.ToString() ?? "0");
 
     public static bool IsAlreadyLoaded(Process process)
     {

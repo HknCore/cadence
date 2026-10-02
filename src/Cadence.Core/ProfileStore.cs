@@ -30,8 +30,7 @@ public sealed class ProfileStore
 
     public ProfileStore(string? path = null)
     {
-        _path = path ?? Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Cadence", "profiles.json");
+        _path = path ?? Path.Combine(AppEnvironment.DataDirectory, "profiles.json");
     }
 
     public GameProfile Default { get { lock (_lock) return _model.Default; } }

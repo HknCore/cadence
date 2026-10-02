@@ -15,8 +15,7 @@ public sealed partial class SettingsPage : Page
 {
     private const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string RunName = "Cadence";
-    private static string ProfileDir => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Cadence");
+    private static string ProfileDir => AppEnvironment.DataDirectory;
 
     private static readonly (HotkeyAction Action, string Label)[] HotkeyLabels =
     [

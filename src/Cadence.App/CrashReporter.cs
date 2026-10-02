@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using Cadence.Core;
 
 namespace Cadence.App;
 
@@ -9,8 +10,7 @@ namespace Cadence.App;
 /// </summary>
 internal static partial class CrashReporter
 {
-    public static string LogPath { get; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Cadence", "crash.log");
+    public static string LogPath { get; } = Path.Combine(AppEnvironment.DataDirectory, "crash.log");
 
     [LibraryImport("user32.dll", EntryPoint = "MessageBoxW", StringMarshalling = StringMarshalling.Utf16)]
     private static partial int MessageBox(IntPtr hwnd, string text, string caption, uint type);
